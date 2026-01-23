@@ -1,0 +1,21 @@
+{
+    "modbus-write": {
+        "label": {
+            "name": "Name",
+            "server": "Server",
+            "functionCode": "Function",
+            "address": "Address"
+        },
+        "status": {
+            "connected": "connected",
+            "disconnected": "disconnected",
+            "writing": "writing...",
+            "success": "success",
+            "noServer": "no server"
+        },
+        "errors": {
+            "invalidFunctionCode": "Invalid function code for single write",
+            "valueOutOfRange": "Register value out of range"
+        }
+    }
+}

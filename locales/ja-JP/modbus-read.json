@@ -1,0 +1,22 @@
+{
+    "modbus-read": {
+        "label": {
+            "name": "名前",
+            "server": "サーバー",
+            "unitId": "ユニットID",
+            "functionCode": "機能コード",
+            "address": "アドレス",
+            "quantity": "数量"
+        },
+        "status": {
+            "connected": "接続済み",
+            "disconnected": "切断",
+            "reading": "読み取り中...",
+            "success": "成功",
+            "noServer": "サーバーなし"
+        },
+        "errors": {
+            "invalidFunctionCode": "読み取り用の無効な機能コード"
+        }
+    }
+}

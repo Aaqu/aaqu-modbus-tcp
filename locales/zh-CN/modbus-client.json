@@ -1,0 +1,20 @@
+{
+    "modbus-client": {
+        "label": {
+            "name": "名称",
+            "host": "主机",
+            "port": "端口",
+            "timeout": "超时",
+            "reconnect": "自动重连",
+            "reconnectInterval": "重连间隔"
+        },
+        "placeholder": {
+            "name": "名称",
+            "host": "localhost"
+        },
+        "status": {
+            "connected": "已连接",
+            "disconnected": "已断开"
+        }
+    }
+}

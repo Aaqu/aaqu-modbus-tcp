@@ -1,0 +1,22 @@
+{
+    "modbus-read": {
+        "label": {
+            "name": "名称",
+            "server": "服务器",
+            "unitId": "设备ID",
+            "functionCode": "功能码",
+            "address": "地址",
+            "quantity": "数量"
+        },
+        "status": {
+            "connected": "已连接",
+            "disconnected": "已断开",
+            "reading": "读取中...",
+            "success": "成功",
+            "noServer": "无服务器"
+        },
+        "errors": {
+            "invalidFunctionCode": "无效的读取功能码"
+        }
+    }
+}

@@ -1,0 +1,22 @@
+{
+    "modbus-read": {
+        "label": {
+            "name": "Nazwa",
+            "server": "Serwer",
+            "unitId": "ID urządzenia",
+            "functionCode": "Funkcja",
+            "address": "Adres",
+            "quantity": "Ilość"
+        },
+        "status": {
+            "connected": "poleczony",
+            "disconnected": "rozliczony",
+            "reading": "odczyt...",
+            "success": "sukces",
+            "noServer": "brak serwera"
+        },
+        "errors": {
+            "invalidFunctionCode": "Nieprawidłowy kod funkcji dla odczytu"
+        }
+    }
+}

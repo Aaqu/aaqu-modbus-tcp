@@ -1,0 +1,21 @@
+{
+    "modbus-read": {
+        "label": {
+            "name": "Name",
+            "server": "Server",
+            "functionCode": "Function",
+            "address": "Address",
+            "quantity": "Quantity"
+        },
+        "status": {
+            "connected": "connected",
+            "disconnected": "disconnected",
+            "reading": "reading...",
+            "success": "success",
+            "noServer": "no server"
+        },
+        "errors": {
+            "invalidFunctionCode": "Invalid function code for read"
+        }
+    }
+}

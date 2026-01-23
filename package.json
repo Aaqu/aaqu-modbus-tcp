@@ -1,0 +1,43 @@
+{
+  "name": "@aaqu/node-red-modbus-tcp",
+  "version": "0.1.0",
+  "description": "aaqu modbus tcp",
+  "keywords": [
+    "node-red",
+    "modbus",
+    "modbus-tcp",
+    "industrial",
+    "automation",
+    "plc"
+  ],
+  "author": "aaqu",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "node-red": {
+    "version": ">=2.0.0",
+    "nodes": {
+      "modbus-client": "nodes/modbus-client.js",
+      "modbus-read": "nodes/modbus-read.js",
+      "modbus-write": "nodes/modbus-write.js",
+      "modbus-write-multiple": "nodes/modbus-write-multiple.js"
+    }
+  },
+  "devDependencies": {
+    "mocha": "^11.7.5",
+    "node-red": "^4.0.0",
+    "node-red-node-test-helper": "^0.3.6",
+    "prettier": "^3.8.1",
+    "should": "^13.2.3"
+  },
+  "scripts": {
+    "test": "mocha \"test/**/*_spec.js\"",
+    "server": "node dev/modbus-server.js",
+    "server:5020": "node dev/modbus-server.js 5020"
+  }
+}

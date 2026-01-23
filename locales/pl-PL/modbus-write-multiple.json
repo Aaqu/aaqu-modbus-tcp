@@ -1,0 +1,25 @@
+{
+    "modbus-write-multiple": {
+        "label": {
+            "name": "Nazwa",
+            "server": "Serwer",
+            "unitId": "ID urządzenia",
+            "functionCode": "Funkcja",
+            "address": "Adres początkowy"
+        },
+        "status": {
+            "connected": "połączony",
+            "disconnected": "rozłączony",
+            "writing": "zapis...",
+            "success": "sukces",
+            "noServer": "brak serwera"
+        },
+        "errors": {
+            "invalidFunctionCode": "Nieprawidłowy kod funkcji dla zapisu wielokrotnego",
+            "emptyArray": "Tablica wartości nie może byc pusta",
+            "tooManyCoils": "Za dużo cewek",
+            "tooManyRegisters": "Za dużo rejestrów",
+            "valueOutOfRange": "Wartość rejestru poza zakresem"
+        }
+    }
+}

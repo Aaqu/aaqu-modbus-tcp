@@ -1,0 +1,25 @@
+h# Development files
+/dev
+/test
+/docs
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Claude AI
+.claude/
+
+# Git files
+.gitignore
+
+# GitHub
+/.github
+
+# Misc
+*.log
+.DS_Store
+Thumbs.db

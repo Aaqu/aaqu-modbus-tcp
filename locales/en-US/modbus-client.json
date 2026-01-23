@@ -1,0 +1,21 @@
+{
+    "modbus-client": {
+        "label": {
+            "name": "Name",
+            "host": "Host",
+            "port": "Port",
+            "unitId": "Unit ID",
+            "timeout": "Timeout",
+            "reconnect": "Auto Reconnect",
+            "reconnectInterval": "Reconnect Interval"
+        },
+        "placeholder": {
+            "name": "Name",
+            "host": "localhost"
+        },
+        "status": {
+            "connected": "connected",
+            "disconnected": "disconnected"
+        }
+    }
+}

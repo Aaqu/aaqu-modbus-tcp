@@ -1,0 +1,111 @@
+<script type="text/javascript">
+    RED.nodes.registerType('modbus-read', {
+        category: 'aaqu modbus tcp',
+        color: '#3FADB5',
+        defaults: {
+            name: { value: '' },
+            server: { value: '', type: 'modbus-client', required: true },
+            unitId: { value: 1, required: true, validate: RED.validators.number() },
+            functionCode: { value: '3', required: true },
+            address: { value: 0, required: true, validate: RED.validators.number() },
+            quantity: { value: 1, required: true, validate: RED.validators.number() }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'db.svg',
+        paletteLabel: 'modbus read',
+        label: function() {
+            if (this.name) return this.name;
+            var fc = {
+                '1': 'Coils',
+                '2': 'Discrete Inputs',
+                '3': 'Holding Registers',
+                '4': 'Input Registers'
+            };
+            return 'Read ' + (fc[this.functionCode] || '');
+        },
+        labelStyle: function() {
+            return this.name ? 'node_label_italic' : '';
+        },
+        oneditprepare: function() {
+            var fcSelect = $('#node-input-functionCode');
+            var quantityInput = $('#node-input-quantity');
+
+            fcSelect.on('change', function() {
+                var fc = fcSelect.val();
+                var max = (fc === '1' || fc === '2') ? 2000 : 125;
+                quantityInput.attr('max', max);
+                $('#quantity-max').text(max);
+            });
+
+            fcSelect.trigger('change');
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="modbus-read">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-server"><i class="fa fa-server"></i> Server</label>
+        <input type="text" id="node-input-server">
+    </div>
+    <div class="form-row">
+        <label for="node-input-unitId"><i class="fa fa-hashtag"></i> Unit ID</label>
+        <input type="number" id="node-input-unitId" min="1" max="255">
+    </div>
+    <div class="form-row">
+        <label for="node-input-functionCode"><i class="fa fa-code"></i> Function</label>
+        <select id="node-input-functionCode">
+            <option value="1">FC01 - Read Coils</option>
+            <option value="2">FC02 - Read Discrete Inputs</option>
+            <option value="3">FC03 - Read Holding Registers</option>
+            <option value="4">FC04 - Read Input Registers</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-address"><i class="fa fa-map-marker"></i> Address</label>
+        <input type="number" id="node-input-address" min="0" max="65535">
+    </div>
+    <div class="form-row">
+        <label for="node-input-quantity"><i class="fa fa-list-ol"></i> Quantity</label>
+        <input type="number" id="node-input-quantity" min="1" max="125">
+        <span class="form-tips">Max: <span id="quantity-max">125</span></span>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="modbus-read">
+    <p>Reads data from a Modbus TCP server.</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt class="optional">unitId <span class="property-type">number</span></dt>
+        <dd>Override the Unit ID (1-255).</dd>
+        <dt class="optional">functionCode <span class="property-type">number</span></dt>
+        <dd>Override the function code (1-4).</dd>
+        <dt class="optional">address <span class="property-type">number</span></dt>
+        <dd>Override the starting address.</dd>
+        <dt class="optional">quantity <span class="property-type">number</span></dt>
+        <dd>Override the quantity to read.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">array</span></dt>
+        <dd>Array of read values (booleans for coils/discrete inputs, numbers for registers).</dd>
+        <dt>modbus <span class="property-type">object</span></dt>
+        <dd>Object containing unitId, functionCode, address, quantity, and byteCount.</dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>Supports the following Modbus read functions:</p>
+    <ul>
+        <li><b>FC01 - Read Coils:</b> Read 1-2000 coil values (boolean)</li>
+        <li><b>FC02 - Read Discrete Inputs:</b> Read 1-2000 discrete input values (boolean)</li>
+        <li><b>FC03 - Read Holding Registers:</b> Read 1-125 holding register values (16-bit)</li>
+        <li><b>FC04 - Read Input Registers:</b> Read 1-125 input register values (16-bit)</li>
+    </ul>
+    <p>Configuration can be overridden by setting properties on the incoming message.</p>
+</script>

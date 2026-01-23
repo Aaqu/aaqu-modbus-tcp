@@ -1,0 +1,86 @@
+<script type="text/javascript">
+    RED.nodes.registerType('modbus-write', {
+        category: 'aaqu modbus tcp',
+        color: '#E9967A',
+        defaults: {
+            name: { value: '' },
+            server: { value: '', type: 'modbus-client', required: true },
+            unitId: { value: 1, required: true, validate: RED.validators.number() },
+            functionCode: { value: '6', required: true },
+            address: { value: 0, required: true, validate: RED.validators.number() }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'db.svg',
+        paletteLabel: 'modbus write',
+        label: function() {
+            if (this.name) return this.name;
+            var fc = {
+                '5': 'Coil',
+                '6': 'Register'
+            };
+            return 'Write ' + (fc[this.functionCode] || '');
+        },
+        labelStyle: function() {
+            return this.name ? 'node_label_italic' : '';
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="modbus-write">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-server"><i class="fa fa-server"></i> Server</label>
+        <input type="text" id="node-input-server">
+    </div>
+    <div class="form-row">
+        <label for="node-input-unitId"><i class="fa fa-hashtag"></i> Unit ID</label>
+        <input type="number" id="node-input-unitId" min="1" max="255">
+    </div>
+    <div class="form-row">
+        <label for="node-input-functionCode"><i class="fa fa-code"></i> Function</label>
+        <select id="node-input-functionCode">
+            <option value="5">FC05 - Write Single Coil</option>
+            <option value="6">FC06 - Write Single Register</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-address"><i class="fa fa-map-marker"></i> Address</label>
+        <input type="number" id="node-input-address" min="0" max="65535">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="modbus-write">
+    <p>Writes a single value to a Modbus TCP server.</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">boolean | number</span></dt>
+        <dd>The value to write. Boolean for coils, number (0-65535) for registers.</dd>
+        <dt class="optional">unitId <span class="property-type">number</span></dt>
+        <dd>Override the Unit ID (1-255).</dd>
+        <dt class="optional">functionCode <span class="property-type">number</span></dt>
+        <dd>Override the function code (5 or 6).</dd>
+        <dt class="optional">address <span class="property-type">number</span></dt>
+        <dd>Override the address.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">boolean | number</span></dt>
+        <dd>The original payload (unchanged).</dd>
+        <dt>modbus <span class="property-type">object</span></dt>
+        <dd>Object containing unitId, functionCode, address, and value.</dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>Supports the following Modbus write functions:</p>
+    <ul>
+        <li><b>FC05 - Write Single Coil:</b> Write a boolean value (true/false or 1/0)</li>
+        <li><b>FC06 - Write Single Register:</b> Write a 16-bit value (0-65535)</li>
+    </ul>
+    <p>Configuration can be overridden by setting properties on the incoming message.</p>
+</script>

@@ -1,0 +1,22 @@
+{
+    "modbus-write": {
+        "label": {
+            "name": "Nazwa",
+            "server": "Serwer",
+            "unitId": "ID urządzenia",
+            "functionCode": "Funkcja",
+            "address": "Adres"
+        },
+        "status": {
+            "connected": "poleczony",
+            "disconnected": "rozłączony",
+            "writing": "zapis...",
+            "success": "sukces",
+            "noServer": "brak serwera"
+        },
+        "errors": {
+            "invalidFunctionCode": "Nieprawidłowy kod funkcji dla zapisu",
+            "valueOutOfRange": "Wartość rejestru poza zakresem"
+        }
+    }
+}

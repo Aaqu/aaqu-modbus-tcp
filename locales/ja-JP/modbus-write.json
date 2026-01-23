@@ -1,0 +1,22 @@
+{
+    "modbus-write": {
+        "label": {
+            "name": "名前",
+            "server": "サーバー",
+            "unitId": "ユニットID",
+            "functionCode": "機能コード",
+            "address": "アドレス"
+        },
+        "status": {
+            "connected": "接続済み",
+            "disconnected": "切断",
+            "writing": "書き込み中...",
+            "success": "成功",
+            "noServer": "サーバーなし"
+        },
+        "errors": {
+            "invalidFunctionCode": "書き込み用の無効な機能コード",
+            "valueOutOfRange": "レジスタ値が範囲外"
+        }
+    }
+}

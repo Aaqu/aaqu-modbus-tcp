@@ -1,0 +1,24 @@
+{
+    "modbus-write-multiple": {
+        "label": {
+            "name": "Name",
+            "server": "Server",
+            "functionCode": "Function",
+            "address": "Start Address"
+        },
+        "status": {
+            "connected": "connected",
+            "disconnected": "disconnected",
+            "writing": "writing...",
+            "success": "success",
+            "noServer": "no server"
+        },
+        "errors": {
+            "invalidFunctionCode": "Invalid function code for multiple write",
+            "emptyArray": "Values array cannot be empty",
+            "tooManyCoils": "Too many coils",
+            "tooManyRegisters": "Too many registers",
+            "valueOutOfRange": "Register value out of range"
+        }
+    }
+}

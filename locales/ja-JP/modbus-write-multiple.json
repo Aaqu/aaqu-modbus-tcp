@@ -1,0 +1,25 @@
+{
+    "modbus-write-multiple": {
+        "label": {
+            "name": "名前",
+            "server": "サーバー",
+            "unitId": "ユニットID",
+            "functionCode": "機能コード",
+            "address": "開始アドレス"
+        },
+        "status": {
+            "connected": "接続済み",
+            "disconnected": "切断",
+            "writing": "書き込み中...",
+            "success": "成功",
+            "noServer": "サーバーなし"
+        },
+        "errors": {
+            "invalidFunctionCode": "複数書き込み用の無効な機能コード",
+            "emptyArray": "値の配列は空にできません",
+            "tooManyCoils": "コイルが多すぎます",
+            "tooManyRegisters": "レジスタが多すぎます",
+            "valueOutOfRange": "レジスタ値が範囲外"
+        }
+    }
+}
