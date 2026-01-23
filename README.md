@@ -15,10 +15,9 @@ Node-RED nodes for Modbus TCP client communication.
 
 ## Installation
 
-### From npm (when published)
+### From npm
 
 ```bash
-cd ~/.node-red
 npm install @aaqu/node-red-modbus-tcp
 ```
 
@@ -288,7 +287,7 @@ MIT
 
 ## Author
 
-aaqu
+Aaqu
 
 ## Contributing
 
@@ -300,14 +299,18 @@ aaqu
 
 ## Changelog
 
+### 0.1.3
+
+- Update README
+
 ### 0.1.2
 
-- test github actions
+- Test github actions
 
 ### 0.1.1
 
-- added to npm registry
-- updated README
+- Added to npm registry
+- Updated README
 
 ### 0.1.0
 

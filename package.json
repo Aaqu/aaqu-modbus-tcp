@@ -1,6 +1,6 @@
 {
   "name": "@aaqu/node-red-modbus-tcp",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "aaqu modbus tcp",
   "keywords": [
     "aaqu",
