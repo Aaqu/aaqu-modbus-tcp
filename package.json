@@ -1,6 +1,6 @@
 {
   "name": "@aaqu/node-red-modbus-tcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "aaqu modbus tcp",
   "keywords": [
     "aaqu",
@@ -17,7 +17,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git+https://github.com/Aaqu/aaqu-modbus-tcp"
   },
   "engines": {
     "node": ">=14.0.0"

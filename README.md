@@ -10,6 +10,8 @@ Node-RED nodes for Modbus TCP client communication.
 - **Auto-reconnect** - Automatic reconnection on connection loss
 - **Dynamic configuration** - Override parameters via `msg` properties
 - **Unit ID per node** - Different Unit IDs for each operation
+- **No external dependencies** - Uses only native Node.js modules
+- **Multi-language support** - English, Polish, Chinese, Japanese
 
 ## Installation
 
@@ -265,10 +267,20 @@ Run the test suite:
 npm test
 ```
 
+## Supported Languages
+
+| Language | Locale |
+|----------|--------|
+| English | en-US |
+| Polish | pl-PL |
+| Chinese (Simplified) | zh-CN |
+| Japanese | ja-JP |
+
 ## Requirements
 
 - Node.js >= 14.0.0
 - Node-RED >= 2.0.0
+- No external dependencies (uses native Node.js `net` module)
 
 ## License
 
@@ -288,7 +300,12 @@ aaqu
 
 ## Changelog
 
-### 1.0.0
+### 0.1.1
+
+- added to npm registry
+- updated README
+
+### 0.1.0
 
 - Initial release
 - Support for FC01, FC02, FC03, FC04 (read operations)
