@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "aaqu modbus tcp",
   "keywords": [
+    "aaqu",
+    "portal",
+    "aaqu-portal",
     "node-red",
     "modbus",
     "modbus-tcp",
