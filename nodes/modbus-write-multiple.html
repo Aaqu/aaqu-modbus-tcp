@@ -1,10 +1,10 @@
 <script type="text/javascript">
-    RED.nodes.registerType('modbus-write-multiple', {
-        category: 'aaqu modbus tcp',
+    RED.nodes.registerType('aaqu-modbus-write-multiple', {
+        category: 'Aaqu Portal',
         color: '#DEB887',
         defaults: {
             name: { value: '' },
-            server: { value: '', type: 'modbus-client', required: true },
+            server: { value: '', type: 'aaqu-modbus-client', required: true },
             unitId: { value: 1, required: true, validate: RED.validators.number() },
             functionCode: { value: '16', required: true },
             address: { value: 0, required: true, validate: RED.validators.number() }
@@ -27,7 +27,7 @@
     });
 </script>
 
-<script type="text/html" data-template-name="modbus-write-multiple">
+<script type="text/html" data-template-name="aaqu-modbus-write-multiple">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -53,7 +53,7 @@
     </div>
 </script>
 
-<script type="text/html" data-help-name="modbus-write-multiple">
+<script type="text/html" data-help-name="aaqu-modbus-write-multiple">
     <p>Writes multiple values to a Modbus TCP server.</p>
 
     <h3>Inputs</h3>

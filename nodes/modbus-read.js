@@ -84,5 +84,5 @@ module.exports = function(RED) {
         });
     }
 
-    RED.nodes.registerType('modbus-read', ModbusReadNode);
+    RED.nodes.registerType('aaqu-modbus-read', ModbusReadNode);
 };

@@ -1,5 +1,5 @@
 {
-    "modbus-read": {
+    "aaqu-modbus-read": {
         "label": {
             "name": "Nazwa",
             "server": "Serwer",

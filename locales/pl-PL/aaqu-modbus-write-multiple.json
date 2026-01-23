@@ -1,5 +1,5 @@
 {
-    "modbus-write-multiple": {
+    "aaqu-modbus-write-multiple": {
         "label": {
             "name": "Nazwa",
             "server": "Serwer",

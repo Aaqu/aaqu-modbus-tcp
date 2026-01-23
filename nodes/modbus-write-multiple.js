@@ -116,5 +116,5 @@ module.exports = function(RED) {
         });
     }
 
-    RED.nodes.registerType('modbus-write-multiple', ModbusWriteMultipleNode);
+    RED.nodes.registerType('aaqu-modbus-write-multiple', ModbusWriteMultipleNode);
 };

@@ -91,5 +91,5 @@ module.exports = function(RED) {
         });
     }
 
-    RED.nodes.registerType('modbus-write', ModbusWriteNode);
+    RED.nodes.registerType('aaqu-modbus-write', ModbusWriteNode);
 };
