@@ -1,6 +1,6 @@
 {
   "name": "@aaqu/node-red-modbus-tcp",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "aaqu modbus tcp",
   "keywords": [
     "aaqu",
@@ -42,5 +42,8 @@
     "test": "mocha \"test/**/*_spec.js\"",
     "server": "node dev/modbus-server.js",
     "server:5020": "node dev/modbus-server.js 5020"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

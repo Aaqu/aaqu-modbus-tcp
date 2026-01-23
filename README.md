@@ -300,6 +300,10 @@ aaqu
 
 ## Changelog
 
+### 0.1.2
+
+- test github actions
+
 ### 0.1.1
 
 - added to npm registry

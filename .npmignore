@@ -1,7 +1,8 @@
-h# Development files
+# Development files
 /dev
 /test
 /docs
+/dev
 
 # IDE and editor files
 .vscode/
@@ -23,3 +24,5 @@ h# Development files
 *.log
 .DS_Store
 Thumbs.db
+
+.idea/
