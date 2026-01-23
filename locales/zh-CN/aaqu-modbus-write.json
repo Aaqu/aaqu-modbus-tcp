@@ -1,22 +1,22 @@
 {
-    "modbus-read": {
+    "aaqu-modbus-write": {
         "label": {
             "name": "名称",
             "server": "服务器",
             "unitId": "设备ID",
             "functionCode": "功能码",
-            "address": "地址",
-            "quantity": "数量"
+            "address": "地址"
         },
         "status": {
             "connected": "已连接",
             "disconnected": "已断开",
-            "reading": "读取中...",
+            "writing": "写入中...",
             "success": "成功",
             "noServer": "无服务器"
         },
         "errors": {
-            "invalidFunctionCode": "无效的读取功能码"
+            "invalidFunctionCode": "无效的写入功能码",
+            "valueOutOfRange": "寄存器值超出范围"
         }
     }
 }

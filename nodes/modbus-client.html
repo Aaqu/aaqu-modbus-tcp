@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    RED.nodes.registerType('modbus-client', {
+    RED.nodes.registerType('aaqu-modbus-client', {
         category: 'config',
         defaults: {
             name: { value: '' },
@@ -15,7 +15,7 @@
     });
 </script>
 
-<script type="text/html" data-template-name="modbus-client">
+<script type="text/html" data-template-name="aaqu-modbus-client">
     <div class="form-row">
         <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-config-input-name" placeholder="Name">
@@ -42,7 +42,7 @@
     </div>
 </script>
 
-<script type="text/html" data-help-name="modbus-client">
+<script type="text/html" data-help-name="aaqu-modbus-client">
     <p>Modbus TCP client configuration node.</p>
     <h3>Properties</h3>
     <dl class="message-properties">

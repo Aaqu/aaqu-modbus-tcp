@@ -66,5 +66,5 @@ module.exports = function(RED) {
         });
     }
 
-    RED.nodes.registerType('modbus-client', ModbusClientNode);
+    RED.nodes.registerType('aaqu-modbus-client', ModbusClientNode);
 };

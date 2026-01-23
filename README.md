@@ -32,7 +32,7 @@ After installation, restart Node-RED and refresh the browser.
 
 ## Nodes
 
-### modbus-client (Configuration Node)
+### aaqu-modbus-client (Configuration Node)
 
 Manages the TCP connection to a Modbus server. Shared by all operation nodes.
 
@@ -44,7 +44,7 @@ Manages the TCP connection to a Modbus server. Shared by all operation nodes.
 | Auto Reconnect | boolean | true | Automatically reconnect on connection loss |
 | Reconnect Interval | number | 5000 | Time between reconnection attempts (ms) |
 
-### modbus-read
+### aaqu-modbus-read
 
 Reads data from a Modbus server.
 
@@ -52,7 +52,7 @@ Reads data from a Modbus server.
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| Server | config | - | Reference to modbus-client node |
+| Server | config | - | Reference to aaqu-modbus-client node |
 | Unit ID | number | 1 | Modbus unit identifier (1-255) |
 | Function | select | FC03 | Function code (FC01-FC04) |
 | Address | number | 0 | Starting address (0-65535) |
@@ -89,7 +89,7 @@ msg.modbus = {
 };
 ```
 
-### modbus-write
+### aaqu-modbus-write
 
 Writes a single value to a Modbus server.
 
@@ -97,7 +97,7 @@ Writes a single value to a Modbus server.
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| Server | config | - | Reference to modbus-client node |
+| Server | config | - | Reference to aaqu-modbus-client node |
 | Unit ID | number | 1 | Modbus unit identifier (1-255) |
 | Function | select | FC06 | Function code (FC05 or FC06) |
 | Address | number | 0 | Address to write (0-65535) |
@@ -130,7 +130,7 @@ msg.modbus = {
 };
 ```
 
-### modbus-write-multiple
+### aaqu-modbus-write-multiple
 
 Writes multiple values to a Modbus server.
 
@@ -138,7 +138,7 @@ Writes multiple values to a Modbus server.
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| Server | config | - | Reference to modbus-client node |
+| Server | config | - | Reference to aaqu-modbus-client node |
 | Unit ID | number | 1 | Modbus unit identifier (1-255) |
 | Function | select | FC16 | Function code (FC15 or FC16) |
 | Address | number | 0 | Starting address (0-65535) |
@@ -176,10 +176,10 @@ msg.modbus = {
 ### Read 10 Holding Registers
 
 ```
-[inject] -> [modbus-read] -> [debug]
+[inject] -> [aaqu-modbus-read] -> [debug]
 ```
 
-Configure modbus-read:
+Configure aaqu-modbus-read:
 - Function: FC03 - Read Holding Registers
 - Address: 0
 - Quantity: 10
@@ -188,10 +188,10 @@ Configure modbus-read:
 ### Write Single Register
 
 ```
-[inject (payload: 1234)] -> [modbus-write] -> [debug]
+[inject (payload: 1234)] -> [aaqu-modbus-write] -> [debug]
 ```
 
-Configure modbus-write:
+Configure aaqu-modbus-write:
 - Function: FC06 - Write Single Register
 - Address: 0
 - Unit ID: 1
@@ -199,10 +199,10 @@ Configure modbus-write:
 ### Write Multiple Registers
 
 ```
-[inject (payload: [100, 200, 300])] -> [modbus-write-multiple] -> [debug]
+[inject (payload: [100, 200, 300])] -> [aaqu-modbus-write-multiple] -> [debug]
 ```
 
-Configure modbus-write-multiple:
+Configure aaqu-modbus-write-multiple:
 - Function: FC16 - Write Multiple Registers
 - Address: 100
 - Unit ID: 1
@@ -298,6 +298,12 @@ Aaqu
 5. Submit a pull request
 
 ## Changelog
+
+### 0.2.0
+
+- Fixed node names to be unique (added `aaqu-` prefix)
+- Changed palette category to "Aaqu Portal"
+- Renamed locale files to match new node names
 
 ### 0.1.3
 

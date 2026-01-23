@@ -26,7 +26,7 @@
     },
     {
         "id": "example-read",
-        "type": "modbus-read",
+        "type": "aaqu-modbus-read",
         "z": "example-flow",
         "name": "Read 10 Holding Registers",
         "server": "example-server",
@@ -74,7 +74,7 @@
     },
     {
         "id": "example-write",
-        "type": "modbus-write",
+        "type": "aaqu-modbus-write",
         "z": "example-flow",
         "name": "Write Single Register",
         "server": "example-server",
@@ -121,7 +121,7 @@
     },
     {
         "id": "example-write-multi",
-        "type": "modbus-write-multiple",
+        "type": "aaqu-modbus-write-multiple",
         "z": "example-flow",
         "name": "Write Multiple Registers",
         "server": "example-server",
@@ -151,7 +151,7 @@
     },
     {
         "id": "example-server",
-        "type": "modbus-client",
+        "type": "aaqu-modbus-client",
         "name": "My Modbus Server",
         "host": "localhost",
         "port": "502",

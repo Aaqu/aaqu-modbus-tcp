@@ -1,11 +1,11 @@
 {
-    "modbus-write": {
+    "aaqu-modbus-write-multiple": {
         "label": {
             "name": "名称",
             "server": "服务器",
             "unitId": "设备ID",
             "functionCode": "功能码",
-            "address": "地址"
+            "address": "起始地址"
         },
         "status": {
             "connected": "已连接",
@@ -15,7 +15,10 @@
             "noServer": "无服务器"
         },
         "errors": {
-            "invalidFunctionCode": "无效的写入功能码",
+            "invalidFunctionCode": "无效的多写功能码",
+            "emptyArray": "值数组不能为空",
+            "tooManyCoils": "线圈数量过多",
+            "tooManyRegisters": "寄存器数量过多",
             "valueOutOfRange": "寄存器值超出范围"
         }
     }

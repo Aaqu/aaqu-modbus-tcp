@@ -1,6 +1,6 @@
 {
   "name": "@aaqu/node-red-modbus-tcp",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "aaqu modbus tcp",
   "keywords": [
     "aaqu",
@@ -25,10 +25,10 @@
   "node-red": {
     "version": ">=2.0.0",
     "nodes": {
-      "modbus-client": "nodes/modbus-client.js",
-      "modbus-read": "nodes/modbus-read.js",
-      "modbus-write": "nodes/modbus-write.js",
-      "modbus-write-multiple": "nodes/modbus-write-multiple.js"
+      "aaqu-modbus-client": "nodes/modbus-client.js",
+      "aaqu-modbus-read": "nodes/modbus-read.js",
+      "aaqu-modbus-write": "nodes/modbus-write.js",
+      "aaqu-modbus-write-multiple": "nodes/modbus-write-multiple.js"
     }
   },
   "devDependencies": {

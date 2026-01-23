@@ -1,5 +1,5 @@
 {
-    "modbus-client": {
+    "aaqu-modbus-client": {
         "label": {
             "name": "名前",
             "host": "ホスト",

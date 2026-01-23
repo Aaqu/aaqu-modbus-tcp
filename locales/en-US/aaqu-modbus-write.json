@@ -1,21 +1,21 @@
 {
-    "modbus-read": {
+    "aaqu-modbus-write": {
         "label": {
             "name": "Name",
             "server": "Server",
             "functionCode": "Function",
-            "address": "Address",
-            "quantity": "Quantity"
+            "address": "Address"
         },
         "status": {
             "connected": "connected",
             "disconnected": "disconnected",
-            "reading": "reading...",
+            "writing": "writing...",
             "success": "success",
             "noServer": "no server"
         },
         "errors": {
-            "invalidFunctionCode": "Invalid function code for read"
+            "invalidFunctionCode": "Invalid function code for single write",
+            "valueOutOfRange": "Register value out of range"
         }
     }
 }

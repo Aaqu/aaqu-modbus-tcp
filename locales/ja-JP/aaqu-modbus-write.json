@@ -1,22 +1,22 @@
 {
-    "modbus-read": {
+    "aaqu-modbus-write": {
         "label": {
             "name": "名前",
             "server": "サーバー",
             "unitId": "ユニットID",
             "functionCode": "機能コード",
-            "address": "アドレス",
-            "quantity": "数量"
+            "address": "アドレス"
         },
         "status": {
             "connected": "接続済み",
             "disconnected": "切断",
-            "reading": "読み取り中...",
+            "writing": "書き込み中...",
             "success": "成功",
             "noServer": "サーバーなし"
         },
         "errors": {
-            "invalidFunctionCode": "読み取り用の無効な機能コード"
+            "invalidFunctionCode": "書き込み用の無効な機能コード",
+            "valueOutOfRange": "レジスタ値が範囲外"
         }
     }
 }
