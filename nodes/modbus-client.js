@@ -12,6 +12,7 @@ module.exports = function(RED) {
         this.timeout = parseInt(config.timeout) || 5000;
         this.reconnect = config.reconnect !== false;
         this.reconnectInterval = parseInt(config.reconnectInterval) || 5000;
+        this.logErrors = config.logErrors !== false;
 
         this.client = new ModbusClient({
             host: this.host,
@@ -34,15 +35,20 @@ module.exports = function(RED) {
         });
 
         this.client.on('error', (err) => {
-            node.error(`Connection error: ${err.message}`);
-            node.emit('error', err);
+            if (node.logErrors) {
+                node.error(`Connection error to ${node.host}:${node.port} - ${err.message || err.code || 'Unknown error'}`);
+            }
+            // Emit custom event instead of 'error' to prevent uncaught exception
+            node.emit('connectionError', err);
         });
 
         this.register = function(userNode) {
             node.users.add(userNode);
             if (node.users.size === 1) {
                 node.client.connect().catch(err => {
-                    node.error(`Failed to connect: ${err.message}`);
+                    if (node.logErrors) {
+                        node.error(`Failed to connect to ${node.host}:${node.port} - ${err.message || err.code || 'Unknown error'}`);
+                    }
                 });
             }
         };

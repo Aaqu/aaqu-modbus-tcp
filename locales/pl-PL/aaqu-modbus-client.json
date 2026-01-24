@@ -6,7 +6,8 @@
             "port": "Port",
             "timeout": "Przekroczenie limitu czasu",
             "reconnect": "Automatyczne wznowienie połączenia",
-            "reconnectInterval": "Interwał automatycznego połączenia"
+            "reconnectInterval": "Interwał automatycznego połączenia",
+            "logErrors": "Loguj błędy połączenia"
         },
         "placeholder": {
             "name": "Nazwa",

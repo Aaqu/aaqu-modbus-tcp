@@ -6,7 +6,8 @@
             "port": "ポート",
             "timeout": "タイムアウト",
             "reconnect": "自動再接続",
-            "reconnectInterval": "再接続間隔"
+            "reconnectInterval": "再接続間隔",
+            "logErrors": "接続エラーをログ"
         },
         "placeholder": {
             "name": "名前",

@@ -43,6 +43,7 @@ Manages the TCP connection to a Modbus server. Shared by all operation nodes.
 | Timeout | number | 5000 | Request timeout in milliseconds |
 | Auto Reconnect | boolean | true | Automatically reconnect on connection loss |
 | Reconnect Interval | number | 5000 | Time between reconnection attempts (ms) |
+| Log Connection Errors | boolean | true | Log connection errors to console |
 
 ### aaqu-modbus-read
 
@@ -298,6 +299,14 @@ Aaqu
 5. Submit a pull request
 
 ## Changelog
+
+### 0.2.1
+
+- Fixed uncaught exception when Modbus server is unavailable (ECONNREFUSED)
+- Improved error handling to prevent Node-RED crash on connection errors
+- Added host:port info to connection error messages
+- Fixed timeout when closing Node-RED with unavailable Modbus server
+- Added option to disable connection error logging in console
 
 ### 0.2.0
 
