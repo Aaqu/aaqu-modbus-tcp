@@ -7,7 +7,8 @@
             "unitId": "Unit ID",
             "timeout": "Timeout",
             "reconnect": "Auto Reconnect",
-            "reconnectInterval": "Reconnect Interval"
+            "reconnectInterval": "Reconnect Interval",
+            "logErrors": "Log Connection Errors"
         },
         "placeholder": {
             "name": "Name",
