@@ -7,7 +7,9 @@
             "timeout": "超时",
             "reconnect": "自动重连",
             "reconnectInterval": "重连间隔",
-            "logErrors": "记录连接错误"
+            "logErrors": "记录连接错误",
+            "keepAlive": "TCP Keep-Alive",
+            "keepAliveInitialDelay": "Keep-Alive延迟"
         },
         "placeholder": {
             "name": "名称",

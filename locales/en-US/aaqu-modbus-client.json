@@ -8,7 +8,9 @@
             "timeout": "Timeout",
             "reconnect": "Auto Reconnect",
             "reconnectInterval": "Reconnect Interval",
-            "logErrors": "Log Connection Errors"
+            "logErrors": "Log Connection Errors",
+            "keepAlive": "TCP Keep-Alive",
+            "keepAliveInitialDelay": "Keep-Alive Delay"
         },
         "placeholder": {
             "name": "Name",

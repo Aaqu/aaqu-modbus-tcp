@@ -13,13 +13,17 @@ module.exports = function(RED) {
         this.reconnect = config.reconnect !== false;
         this.reconnectInterval = parseInt(config.reconnectInterval) || 5000;
         this.logErrors = config.logErrors !== false;
+        this.keepAlive = config.keepAlive !== false;
+        this.keepAliveInitialDelay = parseInt(config.keepAliveInitialDelay) || 10000;
 
         this.client = new ModbusClient({
             host: this.host,
             port: this.port,
             timeout: this.timeout,
             reconnect: this.reconnect,
-            reconnectInterval: this.reconnectInterval
+            reconnectInterval: this.reconnectInterval,
+            keepAlive: this.keepAlive,
+            keepAliveInitialDelay: this.keepAliveInitialDelay
         });
 
         this.users = new Set();

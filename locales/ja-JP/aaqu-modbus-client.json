@@ -7,7 +7,9 @@
             "timeout": "タイムアウト",
             "reconnect": "自動再接続",
             "reconnectInterval": "再接続間隔",
-            "logErrors": "接続エラーをログ"
+            "logErrors": "接続エラーをログ",
+            "keepAlive": "TCP Keep-Alive",
+            "keepAliveInitialDelay": "Keep-Alive遅延"
         },
         "placeholder": {
             "name": "名前",
