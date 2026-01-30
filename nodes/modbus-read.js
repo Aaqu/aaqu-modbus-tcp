@@ -59,7 +59,7 @@ module.exports = function(RED) {
 
             node.server.request(method, address, quantity, unitId)
                 .then(result => {
-                    msg.payload = result.values;
+                    msg.payload = result.responseBuffer;
                     msg.modbus = {
                         functionCode: fc,
                         address: address,
