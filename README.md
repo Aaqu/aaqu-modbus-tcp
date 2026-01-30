@@ -1,4 +1,4 @@
-# aaqu modbus tcp
+# @aaqu/node-red-modbus-tcp
 
 Node-RED nodes for Modbus TCP client communication.
 
