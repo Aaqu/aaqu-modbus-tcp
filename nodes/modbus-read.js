@@ -77,6 +77,7 @@ module.exports = function(RED) {
                 })
                 .catch(err => {
                     node.status({ fill: 'red', shape: 'ring', text: err.message });
+                    if (err.raw) msg.raw = err.raw;
                     if (done) done(err);
                     else node.error(err, msg);
                 });
