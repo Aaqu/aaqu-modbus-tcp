@@ -68,12 +68,13 @@ module.exports = function(RED) {
 
             node.server.request(method, address, value, unitId)
                 .then(result => {
-                    msg.modbus = {
+                    msg.requestModbus = {
                         functionCode: fc,
                         address: result.address,
                         value: result.value,
                         unitId: unitId
                     };
+                    msg.raw = result.raw;
                     send(msg);
                     node.status({ fill: 'green', shape: 'dot', text: 'success' });
                     if (done) done();
