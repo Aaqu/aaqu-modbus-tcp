@@ -2,6 +2,10 @@
 
 Node-RED nodes for Modbus TCP client communication.
 
+## Disclaimer
+
+**THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.** The author makes no guarantees regarding the reliability, accuracy, or suitability of this software for any particular purpose. Use at your own risk. The author shall not be liable for any damages arising from the use of this software in production environments, industrial automation, or any other application.
+
 ## Features
 
 - **Modbus TCP Client** - Connect to Modbus TCP servers (PLCs, RTUs, simulators)
@@ -160,16 +164,16 @@ msg.modbus = {
 
 ### aaqu-modbus-write-multiple
 
-Writes multiple values to a Modbus server.
+Writes multiple values to a Modbus server. This node operates in **forced external data mode** - Unit ID and Address must always be provided via the incoming message.
 
 #### Properties
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | Server | config | - | Reference to aaqu-modbus-client node |
-| Unit ID | number | 1 | Modbus unit identifier (1-255) |
 | Function | select | FC16 | Function code (FC15 or FC16) |
-| Address | number | 0 | Starting address (0-65535) |
+
+> **Note:** Unit ID and Address are not configurable in the node. They must be provided in `msg.unitId` and `msg.address`.
 
 #### Supported Functions
 
@@ -182,22 +186,29 @@ Writes multiple values to a Modbus server.
 
 ```javascript
 msg.payload = [100, 200, 300];  // Array of values to write
-msg.unitId = 2;                  // Optional: Override Unit ID
+msg.unitId = 1;                  // Required: Modbus Unit ID (1-255)
+msg.address = 100;               // Required: Starting address (0-65535)
 msg.functionCode = 16;           // Optional: Override function code
-msg.address = 100;               // Optional: Override starting address
 ```
 
 #### Output Message
 
 ```javascript
 msg.payload = [100, 200, 300];  // Original payload (unchanged)
-msg.modbus = {
+msg.requestModbus = {
     unitId: 1,
     functionCode: 16,
     address: 100,
     quantity: 3
 };
 ```
+
+#### Why External Data Mode?
+
+This node is designed for dynamic, data-driven scenarios where parameters come from external sources (database, API, other nodes). This makes it ideal for:
+- Multi-device communication with varying addresses
+- Dynamic write operations based on external configuration
+- Integration with SCADA systems and databases
 
 ## Examples
 
@@ -227,13 +238,19 @@ Configure aaqu-modbus-write:
 ### Write Multiple Registers
 
 ```
-[inject (payload: [100, 200, 300])] -> [aaqu-modbus-write-multiple] -> [debug]
+[inject] -> [function] -> [aaqu-modbus-write-multiple] -> [debug]
+```
+
+Inject node sends payload, Function node adds required properties:
+```javascript
+msg.payload = [100, 200, 300];
+msg.unitId = 1;
+msg.address = 100;
+return msg;
 ```
 
 Configure aaqu-modbus-write-multiple:
 - Function: FC16 - Write Multiple Registers
-- Address: 100
-- Unit ID: 1
 
 ### Dynamic Configuration
 
@@ -347,6 +364,20 @@ Aaqu
 5. Submit a pull request
 
 ## Changelog
+
+### 0.2.4
+
+- **Breaking change:** modbus-write-multiple now operates in forced external data mode
+  - Unit ID and Address must be provided via `msg.unitId` and `msg.address`
+  - Removed Unit ID and Address configuration from node GUI
+- Improved External Data mode behavior for modbus-read and modbus-write nodes
+  - When External Data is OFF, `msg.*` overrides are now ignored (uses only node configuration)
+- Expanded documentation for modbus-write-multiple node
+- Added disclaimer to README
+
+### 0.2.3
+
+- Allow external input
 
 ### 0.2.2
 

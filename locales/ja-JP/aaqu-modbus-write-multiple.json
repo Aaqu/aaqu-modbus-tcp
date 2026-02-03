@@ -3,9 +3,10 @@
         "label": {
             "name": "名前",
             "server": "サーバー",
-            "unitId": "ユニットID",
-            "functionCode": "機能コード",
-            "address": "開始アドレス"
+            "functionCode": "機能コード"
+        },
+        "tips": {
+            "externalData": "ユニットIDとアドレスはmsg.unitIdとmsg.addressから取得"
         },
         "status": {
             "connected": "接続済み",
@@ -15,6 +16,7 @@
             "noServer": "サーバーなし"
         },
         "errors": {
+            "externalDataRequired": "msg.unitIdとmsg.addressが必要です",
             "invalidFunctionCode": "複数書き込み用の無効な機能コード",
             "emptyArray": "値の配列は空にできません",
             "tooManyCoils": "コイルが多すぎます",

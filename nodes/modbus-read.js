@@ -57,10 +57,11 @@ module.exports = function(RED) {
                 quantity = parseInt(msg.quantity);
                 fc = msg.functionCode !== undefined ? parseInt(msg.functionCode) : node.functionCode;
             } else {
+                // External Data OFF - use ONLY node configuration
                 fc = msg.functionCode !== undefined ? parseInt(msg.functionCode) : node.functionCode;
-                address = msg.address !== undefined ? parseInt(msg.address) : node.address;
-                quantity = msg.quantity !== undefined ? parseInt(msg.quantity) : node.quantity;
-                unitId = msg.unitId !== undefined ? parseInt(msg.unitId) : node.unitId;
+                address = node.address;
+                quantity = node.quantity;
+                unitId = node.unitId;
             }
 
             const method = READ_METHODS[fc];

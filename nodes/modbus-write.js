@@ -53,9 +53,10 @@ module.exports = function(RED) {
                 address = parseInt(msg.address);
                 fc = msg.functionCode !== undefined ? parseInt(msg.functionCode) : node.functionCode;
             } else {
+                // External Data OFF - use ONLY node configuration
                 fc = msg.functionCode !== undefined ? parseInt(msg.functionCode) : node.functionCode;
-                address = msg.address !== undefined ? parseInt(msg.address) : node.address;
-                unitId = msg.unitId !== undefined ? parseInt(msg.unitId) : node.unitId;
+                address = node.address;
+                unitId = node.unitId;
             }
 
             let value = msg.payload;

@@ -4,7 +4,7 @@
         "type": "comment",
         "z": "example-flow",
         "name": "Modbus TCP Basic Usage",
-        "info": "This flow demonstrates basic Modbus TCP operations:\n\n1. **Read Holding Registers** - Reads 10 registers starting from address 0\n2. **Write Single Register** - Writes value from inject node to register at address 0\n3. **Write Multiple Registers** - Writes array of values starting at address 100\n4. **Read External Data** - Uses externalData mode, unitId/address/quantity from msg\n5. **Write External Data** - Uses externalData mode, unitId/address from msg\n\nConfigure the modbus-client node with your Modbus server IP and port before deploying.",
+        "info": "This flow demonstrates basic Modbus TCP operations:\n\n1. **Read Holding Registers** - Reads 10 registers starting from address 0\n2. **Write Single Register** - Writes value from inject node to register at address 0\n3. **Write Multiple Registers** - Writes array of values (unitId and address from msg)\n4. **Read External Data** - Uses externalData mode, unitId/address/quantity from msg\n5. **Write External Data** - Uses externalData mode, unitId/address from msg\n\nConfigure the modbus-client node with your Modbus server IP and port before deploying.\n\n**Note:** Write Multiple node always requires msg.unitId and msg.address.",
         "x": 140,
         "y": 40,
         "wires": []
@@ -107,14 +107,16 @@
         "type": "inject",
         "z": "example-flow",
         "name": "Write [100, 200, 300]",
-        "props": [{"p": "payload"}],
+        "props": [
+            {"p": "payload", "v": "[100, 200, 300]", "vt": "json"},
+            {"p": "unitId", "v": "1", "vt": "num"},
+            {"p": "address", "v": "100", "vt": "num"}
+        ],
         "repeat": "",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "[100, 200, 300]",
-        "payloadType": "json",
         "x": 140,
         "y": 280,
         "wires": [["example-write-multi"]]
@@ -125,9 +127,7 @@
         "z": "example-flow",
         "name": "Write Multiple Registers",
         "server": "example-server",
-        "unitId": "1",
         "functionCode": "16",
-        "address": "100",
         "x": 380,
         "y": 280,
         "wires": [["example-debug-write-multi"]]
