@@ -93,20 +93,29 @@ module.exports = function(RED) {
 
             node.server.request(method, address, values, unitId)
                 .then(result => {
-                    msg.requestModbus = {
-                        functionCode: fc,
-                        address: result.address,
-                        quantity: result.quantity,
-                        unitId: unitId
-                    };
-                    msg.raw = result.raw;
+                    if (result.error) {
+                        msg.payload = null;
+                        msg.error = {
+                            code: result.code,
+                            message: result.message
+                        };
+                        msg.raw = result.raw;
+                        node.status({ fill: 'yellow', shape: 'ring', text: result.message });
+                    } else {
+                        msg.requestModbus = {
+                            functionCode: fc,
+                            address: result.address,
+                            quantity: result.quantity,
+                            unitId: unitId
+                        };
+                        msg.raw = result.raw;
+                        node.status({ fill: 'green', shape: 'dot', text: 'success' });
+                    }
                     send(msg);
-                    node.status({ fill: 'green', shape: 'dot', text: 'success' });
                     if (done) done();
                 })
                 .catch(err => {
                     node.status({ fill: 'red', shape: 'ring', text: err.message });
-                    if (err.raw) msg.raw = err.raw;
                     if (done) done(err);
                     else node.error(err, msg);
                 });

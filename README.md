@@ -9,6 +9,7 @@ Node-RED nodes for Modbus TCP client communication.
 - **Write Operations** - FC05, FC06, FC15, FC16
 - **Auto-reconnect** - Automatic reconnection on connection loss
 - **Dynamic configuration** - Override parameters via `msg` properties
+- **External Data mode** - Hide GUI fields and require parameters from `msg` only
 - **Unit ID per node** - Different Unit IDs for each operation
 - **No external dependencies** - Uses only native Node.js modules
 - **Multi-language support** - English, Polish, Chinese, Japanese
@@ -54,6 +55,7 @@ Reads data from a Modbus server.
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | Server | config | - | Reference to aaqu-modbus-client node |
+| External Data | checkbox | false | When enabled, Unit ID/Address/Quantity are hidden and must come from msg |
 | Unit ID | number | 1 | Modbus unit identifier (1-255) |
 | Function | select | FC03 | Function code (FC01-FC04) |
 | Address | number | 0 | Starting address (0-65535) |
@@ -77,6 +79,19 @@ msg.address = 100;        // Override starting address
 msg.quantity = 10;        // Override quantity
 ```
 
+#### External Data Mode
+
+When **External Data** checkbox is enabled, the GUI fields for Unit ID, Address, and Quantity are hidden. These values **must** be provided in the incoming message:
+
+```javascript
+msg.unitId = 1;           // Required
+msg.address = 100;        // Required
+msg.quantity = 10;        // Required
+msg.functionCode = 3;     // Optional (uses node config if not provided)
+```
+
+This mode is useful when parameters come from external sources (database, API, other nodes) and you don't want to configure them statically in the node.
+
 #### Output Message
 
 ```javascript
@@ -99,6 +114,7 @@ Writes a single value to a Modbus server.
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | Server | config | - | Reference to aaqu-modbus-client node |
+| External Data | checkbox | false | When enabled, Unit ID/Address are hidden and must come from msg |
 | Unit ID | number | 1 | Modbus unit identifier (1-255) |
 | Function | select | FC06 | Function code (FC05 or FC06) |
 | Address | number | 0 | Address to write (0-65535) |
@@ -117,6 +133,17 @@ msg.payload = 1234;       // Value to write (number for registers, boolean for c
 msg.unitId = 2;           // Optional: Override Unit ID
 msg.functionCode = 6;     // Optional: Override function code
 msg.address = 100;        // Optional: Override address
+```
+
+#### External Data Mode
+
+When **External Data** checkbox is enabled, the GUI fields for Unit ID and Address are hidden. These values **must** be provided in the incoming message:
+
+```javascript
+msg.payload = 1234;       // Value to write
+msg.unitId = 1;           // Required
+msg.address = 100;        // Required
+msg.functionCode = 6;     // Optional (uses node config if not provided)
 ```
 
 #### Output Message
@@ -219,6 +246,27 @@ msg.quantity = 5;
 return msg;
 ```
 
+### External Data Mode
+
+When you need all parameters to come from external sources (database, API, etc.), enable **External Data** checkbox. This hides the GUI fields and requires values in the message:
+
+```
+[inject] -> [function] -> [aaqu-modbus-read (External Data: ON)] -> [debug]
+```
+
+Function node:
+```javascript
+msg.unitId = msg.payload.deviceId;
+msg.address = msg.payload.registerAddress;
+msg.quantity = msg.payload.count;
+return msg;
+```
+
+This is useful for:
+- Reading device configuration from database
+- Dynamic polling based on external schedules
+- Multi-device scanning with varying parameters
+
 ## Error Handling
 
 Errors are reported through Node-RED's standard error handling:
@@ -299,6 +347,12 @@ Aaqu
 5. Submit a pull request
 
 ## Changelog
+
+### 0.2.2
+
+- Added **External Data** mode for modbus-read and modbus-write nodes
+- When enabled, Unit ID/Address/Quantity fields are hidden in GUI and must be provided via msg
+- Updated examples with External Data mode usage
 
 ### 0.2.1
 
