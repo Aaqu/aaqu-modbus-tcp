@@ -33,14 +33,15 @@ module.exports = function(RED) {
             node.emit('connected');
         });
 
-        this.client.on('disconnect', () => {
-            node.log(`Disconnected from ${node.host}:${node.port}`);
+        this.client.on('disconnect', (info) => {
+            const reason = info && info.hadError ? 'error' : 'server closed';
+            node.log(`Disconnected from ${node.host}:${node.port} (reason: ${reason})`);
             node.emit('disconnected');
         });
 
         this.client.on('error', (err) => {
             if (node.logErrors) {
-                node.error(`Connection error to ${node.host}:${node.port} - ${err.message || err.code || 'Unknown error'}`);
+                node.error(`Connection error to ${node.host}:${node.port} - ${err.code || err.message || 'Unknown error'}`);
             }
             // Emit custom event instead of 'error' to prevent uncaught exception
             node.emit('connectionError', err);
