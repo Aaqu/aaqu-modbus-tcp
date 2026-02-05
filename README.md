@@ -53,6 +53,7 @@ Manages the TCP connection to a Modbus server. Shared by all operation nodes.
 | Keep-Alive Delay | number | 10000 | Initial delay before first keep-alive probe (ms) |
 | Heartbeat | boolean | false | Send periodic Modbus requests to keep connection active |
 | Heartbeat Interval | number | 5000 | Interval between heartbeat requests (ms) |
+| Include Raw Response | boolean | false | Include raw Modbus frame buffer in msg.raw |
 
 #### Connection Keep-Alive Options
 
@@ -378,7 +379,7 @@ Aaqu
 
 ## Changelog
 
-### 0.3.0
+### 0.3.0 (2026-02-05)
 
 - **Heartbeat** - periodic Modbus requests to keep connections alive
   - Configurable interval (default: 5000ms)
@@ -388,7 +389,10 @@ Aaqu
   - When disabled, `msg.*` overrides are ignored (uses only node config)
 - **modbus-write-multiple** now operates in forced external data mode
   - Unit ID and Address must be provided via `msg.unitId` and `msg.address`
+- **Include Raw Response** option in client config
+  - When enabled, includes raw Modbus frame buffer in msg.raw (default: disabled)
 - Fixed checkbox state persistence in configuration dialog
+- Updated External Data hints to show parameter names (msg.unitId, msg.address, msg.quantity)
 - Improved disconnect logging with reason (`error` or `server closed`)
 - Added disclaimer to README
 

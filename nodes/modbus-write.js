@@ -91,7 +91,9 @@ module.exports = function(RED) {
                             code: result.code,
                             message: result.message
                         };
-                        msg.raw = result.raw;
+                        if (node.server.includeRaw) {
+                            msg.raw = result.raw;
+                        }
                         node.status({ fill: 'yellow', shape: 'ring', text: result.message });
                     } else {
                         msg.requestModbus = {
@@ -100,7 +102,9 @@ module.exports = function(RED) {
                             value: result.value,
                             unitId: unitId
                         };
-                        msg.raw = result.raw;
+                        if (node.server.includeRaw) {
+                            msg.raw = result.raw;
+                        }
                         node.status({ fill: 'green', shape: 'dot', text: 'success' });
                     }
                     send(msg);

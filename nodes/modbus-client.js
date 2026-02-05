@@ -17,6 +17,7 @@ module.exports = function(RED) {
         this.keepAliveInitialDelay = parseInt(config.keepAliveInitialDelay) || 10000;
         this.heartbeat = config.heartbeat || false;
         this.heartbeatInterval = parseInt(config.heartbeatInterval) || 5000;
+        this.includeRaw = config.includeRaw || false;
 
         this.client = new ModbusClient({
             host: this.host,

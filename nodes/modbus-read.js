@@ -82,7 +82,9 @@ module.exports = function(RED) {
                             code: result.code,
                             message: result.message
                         };
-                        msg.raw = result.raw;
+                        if (node.server.includeRaw) {
+                            msg.raw = result.raw;
+                        }
                         node.status({ fill: 'yellow', shape: 'ring', text: result.message });
                     } else {
                         msg.payload = result.responseBuffer;
@@ -96,7 +98,9 @@ module.exports = function(RED) {
                             unitId: unitId,
                             byteCount: result.byteCount
                         };
-                        msg.raw = result.raw;
+                        if (node.server.includeRaw) {
+                            msg.raw = result.raw;
+                        }
                         node.status({ fill: 'green', shape: 'dot', text: 'success' });
                     }
                     send(msg);
