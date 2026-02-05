@@ -5,6 +5,7 @@ const { ModbusClient } = require('../lib/modbus-tcp');
 module.exports = function(RED) {
     function ModbusClientNode(config) {
         RED.nodes.createNode(this, config);
+        this.setMaxListeners(0);  // Allow unlimited listeners for many operational nodes
         const node = this;
 
         this.host = config.host;
