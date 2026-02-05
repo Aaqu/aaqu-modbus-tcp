@@ -16,6 +16,12 @@
         },
         label: function() {
             return this.name || this.host + ':' + this.port;
+        },
+        oneditprepare: function() {
+            $('#node-config-input-reconnect').prop('checked', this.reconnect);
+            $('#node-config-input-logErrors').prop('checked', this.logErrors);
+            $('#node-config-input-keepAlive').prop('checked', this.keepAlive);
+            $('#node-config-input-heartbeat').prop('checked', this.heartbeat);
         }
     });
 </script>

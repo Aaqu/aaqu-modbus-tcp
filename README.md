@@ -49,6 +49,19 @@ Manages the TCP connection to a Modbus server. Shared by all operation nodes.
 | Auto Reconnect | boolean | true | Automatically reconnect on connection loss |
 | Reconnect Interval | number | 5000 | Time between reconnection attempts (ms) |
 | Log Connection Errors | boolean | true | Log connection errors to console |
+| TCP Keep-Alive | boolean | true | Enable TCP keep-alive probes |
+| Keep-Alive Delay | number | 10000 | Initial delay before first keep-alive probe (ms) |
+| Heartbeat | boolean | false | Send periodic Modbus requests to keep connection active |
+| Heartbeat Interval | number | 5000 | Interval between heartbeat requests (ms) |
+
+#### Connection Keep-Alive Options
+
+The client provides multiple options to maintain stable connections:
+
+1. **TCP Keep-Alive** - System-level TCP probes. May not work with all devices.
+2. **Heartbeat** - Application-level Modbus requests. More reliable for devices that close idle connections.
+
+**Recommendation:** If your device closes idle connections, enable **Heartbeat**. It sends periodic read requests (FC03) that are ignored but keep the connection active. Heartbeat is skipped when there are pending requests to avoid interference.
 
 ### aaqu-modbus-read
 
@@ -365,25 +378,19 @@ Aaqu
 
 ## Changelog
 
-### 0.2.4
+### 0.3.0
 
-- **Breaking change:** modbus-write-multiple now operates in forced external data mode
+- **Heartbeat** - periodic Modbus requests to keep connections alive
+  - Configurable interval (default: 5000ms)
+  - Automatically skipped when there are pending requests
+- **External Data mode** for modbus-read and modbus-write nodes
+  - When enabled, Unit ID/Address/Quantity fields are hidden and must come from msg
+  - When disabled, `msg.*` overrides are ignored (uses only node config)
+- **modbus-write-multiple** now operates in forced external data mode
   - Unit ID and Address must be provided via `msg.unitId` and `msg.address`
-  - Removed Unit ID and Address configuration from node GUI
-- Improved External Data mode behavior for modbus-read and modbus-write nodes
-  - When External Data is OFF, `msg.*` overrides are now ignored (uses only node configuration)
-- Expanded documentation for modbus-write-multiple node
+- Fixed checkbox state persistence in configuration dialog
+- Improved disconnect logging with reason (`error` or `server closed`)
 - Added disclaimer to README
-
-### 0.2.3
-
-- Allow external input
-
-### 0.2.2
-
-- Added **External Data** mode for modbus-read and modbus-write nodes
-- When enabled, Unit ID/Address/Quantity fields are hidden in GUI and must be provided via msg
-- Updated examples with External Data mode usage
 
 ### 0.2.1
 
