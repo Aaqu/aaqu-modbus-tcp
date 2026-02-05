@@ -132,6 +132,8 @@ module.exports = function(RED) {
         });
 
         node.on('close', function(done) {
+            node.server.removeListener('connected', updateStatus);
+            node.server.removeListener('disconnected', updateStatus);
             node.server.deregister(node);
             done();
         });

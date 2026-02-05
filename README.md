@@ -379,6 +379,10 @@ Aaqu
 
 ## Changelog
 
+### 0.3.1 (2026-02-05)
+
+- **Fixed memory leak** - Event listeners (`connected`/`disconnected`) on config node are now properly removed when operation nodes are closed/redeployed
+
 ### 0.3.0 (2026-02-05)
 
 - **Heartbeat** - periodic Modbus requests to keep connections alive
