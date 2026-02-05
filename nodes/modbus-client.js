@@ -80,6 +80,7 @@ module.exports = function(RED) {
         };
 
         this.on('close', function(done) {
+            node.client.removeAllListeners();
             node.client.disconnect().then(done).catch(done);
         });
     }
