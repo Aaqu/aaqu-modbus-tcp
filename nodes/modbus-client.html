@@ -8,10 +8,22 @@
             timeout: { value: 5000, required: true, validate: RED.validators.number() },
             reconnect: { value: true },
             reconnectInterval: { value: 5000, validate: RED.validators.number() },
-            logErrors: { value: true }
+            logErrors: { value: true },
+            keepAlive: { value: true },
+            keepAliveInitialDelay: { value: 10000, validate: RED.validators.number() },
+            heartbeat: { value: false },
+            heartbeatInterval: { value: 5000, validate: RED.validators.number() },
+            includeRaw: { value: false }
         },
         label: function() {
             return this.name || this.host + ':' + this.port;
+        },
+        oneditprepare: function() {
+            $('#node-config-input-reconnect').prop('checked', this.reconnect);
+            $('#node-config-input-logErrors').prop('checked', this.logErrors);
+            $('#node-config-input-keepAlive').prop('checked', this.keepAlive);
+            $('#node-config-input-heartbeat').prop('checked', this.heartbeat);
+            $('#node-config-input-includeRaw').prop('checked', this.includeRaw);
         }
     });
 </script>
@@ -45,6 +57,26 @@
         <label for="node-config-input-logErrors"><i class="fa fa-exclamation-triangle"></i> Log Connection Errors</label>
         <input type="checkbox" id="node-config-input-logErrors" style="width: auto;">
     </div>
+    <div class="form-row">
+        <label for="node-config-input-keepAlive"><i class="fa fa-heartbeat"></i> TCP Keep-Alive</label>
+        <input type="checkbox" id="node-config-input-keepAlive" style="width: auto;">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-keepAliveInitialDelay"><i class="fa fa-clock-o"></i> Keep-Alive Delay (ms)</label>
+        <input type="number" id="node-config-input-keepAliveInitialDelay" placeholder="10000" min="1000">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-heartbeat"><i class="fa fa-heartbeat"></i> Heartbeat</label>
+        <input type="checkbox" id="node-config-input-heartbeat" style="width: auto;">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-heartbeatInterval"><i class="fa fa-clock-o"></i> Heartbeat Interval (ms)</label>
+        <input type="number" id="node-config-input-heartbeatInterval" placeholder="5000" min="1000">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-includeRaw"><i class="fa fa-file-code-o"></i> Include Raw Response</label>
+        <input type="checkbox" id="node-config-input-includeRaw" style="width: auto;">
+    </div>
 </script>
 
 <script type="text/html" data-help-name="aaqu-modbus-client">
@@ -63,5 +95,15 @@
         <dd>Time between reconnection attempts in milliseconds.</dd>
         <dt>Log Connection Errors <span class="property-type">boolean</span></dt>
         <dd>Log connection errors to the console (default: enabled).</dd>
+        <dt>TCP Keep-Alive <span class="property-type">boolean</span></dt>
+        <dd>Enable TCP keep-alive to prevent connection drops (default: enabled).</dd>
+        <dt>Keep-Alive Delay <span class="property-type">number</span></dt>
+        <dd>Initial delay before first keep-alive probe in milliseconds (default: 10000).</dd>
+        <dt>Heartbeat <span class="property-type">boolean</span></dt>
+        <dd>Send periodic Modbus read requests to keep the connection active (default: disabled).</dd>
+        <dt>Heartbeat Interval <span class="property-type">number</span></dt>
+        <dd>Interval between heartbeat requests in milliseconds (default: 5000).</dd>
+        <dt>Include Raw Response <span class="property-type">boolean</span></dt>
+        <dd>Include raw Modbus frame buffer in output message as msg.raw (default: disabled).</dd>
     </dl>
 </script>

@@ -15,6 +15,7 @@ module.exports = function(RED) {
         const node = this;
 
         this.server = RED.nodes.getNode(config.server);
+        this.externalData = config.externalData || false;
         this.functionCode = parseInt(config.functionCode) || FUNCTION_CODES.READ_HOLDING_REGISTERS;
         this.address = parseInt(config.address) || 0;
         this.quantity = parseInt(config.quantity) || 1;
@@ -42,10 +43,26 @@ module.exports = function(RED) {
         node.on('input', function(msg, send, done) {
             send = send || function() { node.send.apply(node, arguments); };
 
-            const fc = msg.functionCode !== undefined ? parseInt(msg.functionCode) : node.functionCode;
-            const address = msg.address !== undefined ? parseInt(msg.address) : node.address;
-            const quantity = msg.quantity !== undefined ? parseInt(msg.quantity) : node.quantity;
-            const unitId = msg.unitId !== undefined ? parseInt(msg.unitId) : node.unitId;
+            let fc, address, quantity, unitId;
+
+            if (node.externalData) {
+                if (msg.unitId === undefined || msg.address === undefined || msg.quantity === undefined) {
+                    const err = new Error('External data mode: msg.unitId, msg.address, and msg.quantity are required');
+                    if (done) done(err);
+                    else node.error(err, msg);
+                    return;
+                }
+                unitId = parseInt(msg.unitId);
+                address = parseInt(msg.address);
+                quantity = parseInt(msg.quantity);
+                fc = msg.functionCode !== undefined ? parseInt(msg.functionCode) : node.functionCode;
+            } else {
+                // External Data OFF - use ONLY node configuration
+                fc = msg.functionCode !== undefined ? parseInt(msg.functionCode) : node.functionCode;
+                address = node.address;
+                quantity = node.quantity;
+                unitId = node.unitId;
+            }
 
             const method = READ_METHODS[fc];
             if (!method) {
@@ -59,16 +76,34 @@ module.exports = function(RED) {
 
             node.server.request(method, address, quantity, unitId)
                 .then(result => {
-                    msg.payload = result.values;
-                    msg.modbus = {
-                        functionCode: fc,
-                        address: address,
-                        quantity: quantity,
-                        unitId: unitId,
-                        byteCount: result.byteCount
-                    };
+                    if (result.error) {
+                        msg.payload = null;
+                        msg.error = {
+                            code: result.code,
+                            message: result.message
+                        };
+                        if (node.server.includeRaw) {
+                            msg.raw = result.raw;
+                        }
+                        node.status({ fill: 'yellow', shape: 'ring', text: result.message });
+                    } else {
+                        msg.payload = result.responseBuffer;
+                        msg.responseBuffer = {
+                            buffer: result.buffer
+                        };
+                        msg.requestModbus = {
+                            functionCode: fc,
+                            address: address,
+                            quantity: quantity,
+                            unitId: unitId,
+                            byteCount: result.byteCount
+                        };
+                        if (node.server.includeRaw) {
+                            msg.raw = result.raw;
+                        }
+                        node.status({ fill: 'green', shape: 'dot', text: 'success' });
+                    }
                     send(msg);
-                    node.status({ fill: 'green', shape: 'dot', text: 'success' });
                     if (done) done();
                 })
                 .catch(err => {

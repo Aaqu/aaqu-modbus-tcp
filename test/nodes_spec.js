@@ -134,14 +134,13 @@ describe('modbus nodes', function() {
         it('should be loaded with config', function(done) {
             const flow = [
                 { id: 'c1', type: 'aaqu-modbus-client', host: 'localhost', port: '502' },
-                { id: 'n1', type: 'aaqu-modbus-write-multiple', name: 'Write Multi', server: 'c1', functionCode: '16', address: '200', unitId: '4' }
+                { id: 'n1', type: 'aaqu-modbus-write-multiple', name: 'Write Multi', server: 'c1', functionCode: '16' }
             ];
             helper.load([modbusClientNode, modbusWriteMultipleNode], flow, function() {
                 const n1 = helper.getNode('n1');
                 n1.should.have.property('name', 'Write Multi');
                 n1.should.have.property('functionCode', 16);
-                n1.should.have.property('address', 200);
-                n1.should.have.property('unitId', 4);
+                // address and unitId are now forced external (from msg)
                 done();
             });
         });
@@ -149,7 +148,7 @@ describe('modbus nodes', function() {
         it('should default to FC16 (write multiple registers)', function(done) {
             const flow = [
                 { id: 'c1', type: 'aaqu-modbus-client', host: 'localhost', port: '502' },
-                { id: 'n1', type: 'aaqu-modbus-write-multiple', server: 'c1', address: '0' }
+                { id: 'n1', type: 'aaqu-modbus-write-multiple', server: 'c1' }
             ];
             helper.load([modbusClientNode, modbusWriteMultipleNode], flow, function() {
                 const n1 = helper.getNode('n1');

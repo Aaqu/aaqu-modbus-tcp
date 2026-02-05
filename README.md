@@ -1,6 +1,10 @@
-# aaqu modbus tcp
+# @aaqu/node-red-modbus-tcp
 
 Node-RED nodes for Modbus TCP client communication.
+
+## Disclaimer
+
+**THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.** The author makes no guarantees regarding the reliability, accuracy, or suitability of this software for any particular purpose. Use at your own risk. The author shall not be liable for any damages arising from the use of this software in production environments, industrial automation, or any other application.
 
 ## Features
 
@@ -9,6 +13,7 @@ Node-RED nodes for Modbus TCP client communication.
 - **Write Operations** - FC05, FC06, FC15, FC16
 - **Auto-reconnect** - Automatic reconnection on connection loss
 - **Dynamic configuration** - Override parameters via `msg` properties
+- **External Data mode** - Hide GUI fields and require parameters from `msg` only
 - **Unit ID per node** - Different Unit IDs for each operation
 - **No external dependencies** - Uses only native Node.js modules
 - **Multi-language support** - English, Polish, Chinese, Japanese
@@ -44,6 +49,20 @@ Manages the TCP connection to a Modbus server. Shared by all operation nodes.
 | Auto Reconnect | boolean | true | Automatically reconnect on connection loss |
 | Reconnect Interval | number | 5000 | Time between reconnection attempts (ms) |
 | Log Connection Errors | boolean | true | Log connection errors to console |
+| TCP Keep-Alive | boolean | true | Enable TCP keep-alive probes |
+| Keep-Alive Delay | number | 10000 | Initial delay before first keep-alive probe (ms) |
+| Heartbeat | boolean | false | Send periodic Modbus requests to keep connection active |
+| Heartbeat Interval | number | 5000 | Interval between heartbeat requests (ms) |
+| Include Raw Response | boolean | false | Include raw Modbus frame buffer in msg.raw |
+
+#### Connection Keep-Alive Options
+
+The client provides multiple options to maintain stable connections:
+
+1. **TCP Keep-Alive** - System-level TCP probes. May not work with all devices.
+2. **Heartbeat** - Application-level Modbus requests. More reliable for devices that close idle connections.
+
+**Recommendation:** If your device closes idle connections, enable **Heartbeat**. It sends periodic read requests (FC03) that are ignored but keep the connection active. Heartbeat is skipped when there are pending requests to avoid interference.
 
 ### aaqu-modbus-read
 
@@ -54,6 +73,7 @@ Reads data from a Modbus server.
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | Server | config | - | Reference to aaqu-modbus-client node |
+| External Data | checkbox | false | When enabled, Unit ID/Address/Quantity are hidden and must come from msg |
 | Unit ID | number | 1 | Modbus unit identifier (1-255) |
 | Function | select | FC03 | Function code (FC01-FC04) |
 | Address | number | 0 | Starting address (0-65535) |
@@ -77,6 +97,19 @@ msg.address = 100;        // Override starting address
 msg.quantity = 10;        // Override quantity
 ```
 
+#### External Data Mode
+
+When **External Data** checkbox is enabled, the GUI fields for Unit ID, Address, and Quantity are hidden. These values **must** be provided in the incoming message:
+
+```javascript
+msg.unitId = 1;           // Required
+msg.address = 100;        // Required
+msg.quantity = 10;        // Required
+msg.functionCode = 3;     // Optional (uses node config if not provided)
+```
+
+This mode is useful when parameters come from external sources (database, API, other nodes) and you don't want to configure them statically in the node.
+
 #### Output Message
 
 ```javascript
@@ -99,6 +132,7 @@ Writes a single value to a Modbus server.
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | Server | config | - | Reference to aaqu-modbus-client node |
+| External Data | checkbox | false | When enabled, Unit ID/Address are hidden and must come from msg |
 | Unit ID | number | 1 | Modbus unit identifier (1-255) |
 | Function | select | FC06 | Function code (FC05 or FC06) |
 | Address | number | 0 | Address to write (0-65535) |
@@ -119,6 +153,17 @@ msg.functionCode = 6;     // Optional: Override function code
 msg.address = 100;        // Optional: Override address
 ```
 
+#### External Data Mode
+
+When **External Data** checkbox is enabled, the GUI fields for Unit ID and Address are hidden. These values **must** be provided in the incoming message:
+
+```javascript
+msg.payload = 1234;       // Value to write
+msg.unitId = 1;           // Required
+msg.address = 100;        // Required
+msg.functionCode = 6;     // Optional (uses node config if not provided)
+```
+
 #### Output Message
 
 ```javascript
@@ -133,16 +178,16 @@ msg.modbus = {
 
 ### aaqu-modbus-write-multiple
 
-Writes multiple values to a Modbus server.
+Writes multiple values to a Modbus server. This node operates in **forced external data mode** - Unit ID and Address must always be provided via the incoming message.
 
 #### Properties
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | Server | config | - | Reference to aaqu-modbus-client node |
-| Unit ID | number | 1 | Modbus unit identifier (1-255) |
 | Function | select | FC16 | Function code (FC15 or FC16) |
-| Address | number | 0 | Starting address (0-65535) |
+
+> **Note:** Unit ID and Address are not configurable in the node. They must be provided in `msg.unitId` and `msg.address`.
 
 #### Supported Functions
 
@@ -155,22 +200,29 @@ Writes multiple values to a Modbus server.
 
 ```javascript
 msg.payload = [100, 200, 300];  // Array of values to write
-msg.unitId = 2;                  // Optional: Override Unit ID
+msg.unitId = 1;                  // Required: Modbus Unit ID (1-255)
+msg.address = 100;               // Required: Starting address (0-65535)
 msg.functionCode = 16;           // Optional: Override function code
-msg.address = 100;               // Optional: Override starting address
 ```
 
 #### Output Message
 
 ```javascript
 msg.payload = [100, 200, 300];  // Original payload (unchanged)
-msg.modbus = {
+msg.requestModbus = {
     unitId: 1,
     functionCode: 16,
     address: 100,
     quantity: 3
 };
 ```
+
+#### Why External Data Mode?
+
+This node is designed for dynamic, data-driven scenarios where parameters come from external sources (database, API, other nodes). This makes it ideal for:
+- Multi-device communication with varying addresses
+- Dynamic write operations based on external configuration
+- Integration with SCADA systems and databases
 
 ## Examples
 
@@ -200,13 +252,19 @@ Configure aaqu-modbus-write:
 ### Write Multiple Registers
 
 ```
-[inject (payload: [100, 200, 300])] -> [aaqu-modbus-write-multiple] -> [debug]
+[inject] -> [function] -> [aaqu-modbus-write-multiple] -> [debug]
+```
+
+Inject node sends payload, Function node adds required properties:
+```javascript
+msg.payload = [100, 200, 300];
+msg.unitId = 1;
+msg.address = 100;
+return msg;
 ```
 
 Configure aaqu-modbus-write-multiple:
 - Function: FC16 - Write Multiple Registers
-- Address: 100
-- Unit ID: 1
 
 ### Dynamic Configuration
 
@@ -218,6 +276,27 @@ msg.address = flow.get('startAddress') || 0;
 msg.quantity = 5;
 return msg;
 ```
+
+### External Data Mode
+
+When you need all parameters to come from external sources (database, API, etc.), enable **External Data** checkbox. This hides the GUI fields and requires values in the message:
+
+```
+[inject] -> [function] -> [aaqu-modbus-read (External Data: ON)] -> [debug]
+```
+
+Function node:
+```javascript
+msg.unitId = msg.payload.deviceId;
+msg.address = msg.payload.registerAddress;
+msg.quantity = msg.payload.count;
+return msg;
+```
+
+This is useful for:
+- Reading device configuration from database
+- Dynamic polling based on external schedules
+- Multi-device scanning with varying parameters
 
 ## Error Handling
 
@@ -299,6 +378,23 @@ Aaqu
 5. Submit a pull request
 
 ## Changelog
+
+### 0.3.0 (2026-02-05)
+
+- **Heartbeat** - periodic Modbus requests to keep connections alive
+  - Configurable interval (default: 5000ms)
+  - Automatically skipped when there are pending requests
+- **External Data mode** for modbus-read and modbus-write nodes
+  - When enabled, Unit ID/Address/Quantity fields are hidden and must come from msg
+  - When disabled, `msg.*` overrides are ignored (uses only node config)
+- **modbus-write-multiple** now operates in forced external data mode
+  - Unit ID and Address must be provided via `msg.unitId` and `msg.address`
+- **Include Raw Response** option in client config
+  - When enabled, includes raw Modbus frame buffer in msg.raw (default: disabled)
+- Fixed checkbox state persistence in configuration dialog
+- Updated External Data hints to show parameter names (msg.unitId, msg.address, msg.quantity)
+- Improved disconnect logging with reason (`error` or `server closed`)
+- Added disclaimer to README
 
 ### 0.2.1
 

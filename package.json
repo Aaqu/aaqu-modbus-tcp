@@ -1,7 +1,7 @@
 {
   "name": "@aaqu/node-red-modbus-tcp",
-  "version": "0.2.1",
-  "description": "aaqu modbus tcp",
+  "version": "0.2.3",
+  "description": "Node-RED nodes for Modbus TCP client communication with PLCs and industrial automation devices. Zero production dependencies.",
   "keywords": [
     "aaqu",
     "portal",
@@ -19,6 +19,10 @@
     "type": "git",
     "url": "git+https://github.com/Aaqu/aaqu-modbus-tcp"
   },
+  "bugs": {
+    "url": "https://github.com/Aaqu/aaqu-modbus-tcp/issues"
+  },
+  "homepage": "https://github.com/Aaqu/aaqu-modbus-tcp#readme",
   "engines": {
     "node": ">=14.0.0"
   },

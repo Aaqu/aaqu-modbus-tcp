@@ -3,8 +3,10 @@
         "label": {
             "name": "Name",
             "server": "Server",
-            "functionCode": "Function",
-            "address": "Start Address"
+            "functionCode": "Function"
+        },
+        "tips": {
+            "externalData": "Unit ID and Address are taken from msg.unitId and msg.address"
         },
         "status": {
             "connected": "connected",
@@ -14,6 +16,7 @@
             "noServer": "no server"
         },
         "errors": {
+            "externalDataRequired": "msg.unitId and msg.address are required",
             "invalidFunctionCode": "Invalid function code for multiple write",
             "emptyArray": "Values array cannot be empty",
             "tooManyCoils": "Too many coils",

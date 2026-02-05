@@ -5,7 +5,9 @@ node_modules/
 dev/
 
 # Claude AI
-i japoski
+.claude
+CLAUDE.md
+
 # IDE
 .idea/
 .vscode/

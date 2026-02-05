@@ -7,7 +7,9 @@
             "timeout": "Przekroczenie limitu czasu",
             "reconnect": "Automatyczne wznowienie połączenia",
             "reconnectInterval": "Interwał automatycznego połączenia",
-            "logErrors": "Loguj błędy połączenia"
+            "logErrors": "Loguj błędy połączenia",
+            "keepAlive": "TCP Keep-Alive",
+            "keepAliveInitialDelay": "Opóźnienie Keep-Alive"
         },
         "placeholder": {
             "name": "Nazwa",

@@ -3,9 +3,10 @@
         "label": {
             "name": "名称",
             "server": "服务器",
-            "unitId": "设备ID",
-            "functionCode": "功能码",
-            "address": "起始地址"
+            "functionCode": "功能码"
+        },
+        "tips": {
+            "externalData": "设备ID和地址从msg.unitId和msg.address获取"
         },
         "status": {
             "connected": "已连接",
@@ -15,6 +16,7 @@
             "noServer": "无服务器"
         },
         "errors": {
+            "externalDataRequired": "需要msg.unitId和msg.address",
             "invalidFunctionCode": "无效的多写功能码",
             "emptyArray": "值数组不能为空",
             "tooManyCoils": "线圈数量过多",

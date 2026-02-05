@@ -13,6 +13,7 @@ module.exports = function(RED) {
         const node = this;
 
         this.server = RED.nodes.getNode(config.server);
+        this.externalData = config.externalData || false;
         this.functionCode = parseInt(config.functionCode) || FUNCTION_CODES.WRITE_SINGLE_REGISTER;
         this.address = parseInt(config.address) || 0;
         this.unitId = parseInt(config.unitId) || 1;
@@ -39,9 +40,25 @@ module.exports = function(RED) {
         node.on('input', function(msg, send, done) {
             send = send || function() { node.send.apply(node, arguments); };
 
-            const fc = msg.functionCode !== undefined ? parseInt(msg.functionCode) : node.functionCode;
-            const address = msg.address !== undefined ? parseInt(msg.address) : node.address;
-            const unitId = msg.unitId !== undefined ? parseInt(msg.unitId) : node.unitId;
+            let fc, address, unitId;
+
+            if (node.externalData) {
+                if (msg.unitId === undefined || msg.address === undefined) {
+                    const err = new Error('External data mode: msg.unitId and msg.address are required');
+                    if (done) done(err);
+                    else node.error(err, msg);
+                    return;
+                }
+                unitId = parseInt(msg.unitId);
+                address = parseInt(msg.address);
+                fc = msg.functionCode !== undefined ? parseInt(msg.functionCode) : node.functionCode;
+            } else {
+                // External Data OFF - use ONLY node configuration
+                fc = msg.functionCode !== undefined ? parseInt(msg.functionCode) : node.functionCode;
+                address = node.address;
+                unitId = node.unitId;
+            }
+
             let value = msg.payload;
 
             const method = WRITE_METHODS[fc];
@@ -68,14 +85,29 @@ module.exports = function(RED) {
 
             node.server.request(method, address, value, unitId)
                 .then(result => {
-                    msg.modbus = {
-                        functionCode: fc,
-                        address: result.address,
-                        value: result.value,
-                        unitId: unitId
-                    };
+                    if (result.error) {
+                        msg.payload = null;
+                        msg.error = {
+                            code: result.code,
+                            message: result.message
+                        };
+                        if (node.server.includeRaw) {
+                            msg.raw = result.raw;
+                        }
+                        node.status({ fill: 'yellow', shape: 'ring', text: result.message });
+                    } else {
+                        msg.requestModbus = {
+                            functionCode: fc,
+                            address: result.address,
+                            value: result.value,
+                            unitId: unitId
+                        };
+                        if (node.server.includeRaw) {
+                            msg.raw = result.raw;
+                        }
+                        node.status({ fill: 'green', shape: 'dot', text: 'success' });
+                    }
                     send(msg);
-                    node.status({ fill: 'green', shape: 'dot', text: 'success' });
                     if (done) done();
                 })
                 .catch(err => {
