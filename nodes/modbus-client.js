@@ -15,6 +15,8 @@ module.exports = function(RED) {
         this.logErrors = config.logErrors !== false;
         this.keepAlive = config.keepAlive !== false;
         this.keepAliveInitialDelay = parseInt(config.keepAliveInitialDelay) || 10000;
+        this.heartbeat = config.heartbeat || false;
+        this.heartbeatInterval = parseInt(config.heartbeatInterval) || 5000;
 
         this.client = new ModbusClient({
             host: this.host,
@@ -30,10 +32,14 @@ module.exports = function(RED) {
 
         this.client.on('connect', () => {
             node.log(`Connected to ${node.host}:${node.port}`);
+            if (node.heartbeat) {
+                node.client.startHeartbeat(node.heartbeatInterval);
+            }
             node.emit('connected');
         });
 
         this.client.on('disconnect', (info) => {
+            node.client.stopHeartbeat();
             const reason = info && info.hadError ? 'error' : 'server closed';
             node.log(`Disconnected from ${node.host}:${node.port} (reason: ${reason})`);
             node.emit('disconnected');
