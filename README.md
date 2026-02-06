@@ -379,6 +379,11 @@ Aaqu
 
 ## Changelog
 
+### 0.3.2 (2026-02-05)
+
+- **Fixed MaxListenersExceededWarning** - Event listeners on ModbusClient (`connect`/`disconnect`/`error`) are now removed when config node is closed
+- **Support for many operational nodes** - Config node now allows unlimited listeners, preventing warnings when using 10+ read/write nodes
+
 ### 0.3.1 (2026-02-05)
 
 - **Fixed memory leak** - Event listeners (`connected`/`disconnected`) on config node are now properly removed when operation nodes are closed/redeployed

@@ -1,6 +1,6 @@
 {
   "name": "@aaqu/node-red-modbus-tcp",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Node-RED nodes for Modbus TCP client communication with PLCs and industrial automation devices. Zero production dependencies.",
   "keywords": [
     "aaqu",
