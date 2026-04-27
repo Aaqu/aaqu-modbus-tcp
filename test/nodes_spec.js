@@ -7,6 +7,9 @@ const modbusClientNode = require('../nodes/modbus-client.js');
 const modbusReadNode = require('../nodes/modbus-read.js');
 const modbusWriteNode = require('../nodes/modbus-write.js');
 const modbusWriteMultipleNode = require('../nodes/modbus-write-multiple.js');
+const modbusReadWriteNode = require('../nodes/modbus-read-write.js');
+const modbusDiagnosticNode = require('../nodes/modbus-diagnostic.js');
+const modbusFileNode = require('../nodes/modbus-file.js');
 
 helper.init(require.resolve('node-red'));
 
@@ -153,6 +156,90 @@ describe('modbus nodes', function() {
             helper.load([modbusClientNode, modbusWriteMultipleNode], flow, function() {
                 const n1 = helper.getNode('n1');
                 n1.should.have.property('functionCode', 16);
+                done();
+            });
+        });
+    });
+
+    describe('modbus-read-write node', function() {
+        it('should be loaded with config', function(done) {
+            const flow = [
+                { id: 'c1', type: 'aaqu-modbus-client', host: 'localhost', port: '502' },
+                { id: 'n1', type: 'aaqu-modbus-read-write', name: 'RW', server: 'c1',
+                    readAddress: '10', readQuantity: '5', writeAddress: '100', unitId: '2' }
+            ];
+            helper.load([modbusClientNode, modbusReadWriteNode], flow, function() {
+                const n1 = helper.getNode('n1');
+                n1.should.have.property('readAddress', 10);
+                n1.should.have.property('readQuantity', 5);
+                n1.should.have.property('writeAddress', 100);
+                n1.should.have.property('unitId', 2);
+                done();
+            });
+        });
+
+        it('should error without server', function(done) {
+            const flow = [
+                { id: 'n1', type: 'aaqu-modbus-read-write', server: '' }
+            ];
+            helper.load(modbusReadWriteNode, flow, function() {
+                helper.getNode('n1').should.have.property('type', 'aaqu-modbus-read-write');
+                done();
+            });
+        });
+    });
+
+    describe('modbus-diagnostic node', function() {
+        it('should default to reportServerId', function(done) {
+            const flow = [
+                { id: 'c1', type: 'aaqu-modbus-client', host: 'localhost', port: '502' },
+                { id: 'n1', type: 'aaqu-modbus-diagnostic', server: 'c1' }
+            ];
+            helper.load([modbusClientNode, modbusDiagnosticNode], flow, function() {
+                const n1 = helper.getNode('n1');
+                n1.should.have.property('operation', 'reportServerId');
+                done();
+            });
+        });
+
+        it('should accept readDeviceIdentification config', function(done) {
+            const flow = [
+                { id: 'c1', type: 'aaqu-modbus-client', host: 'localhost', port: '502' },
+                { id: 'n1', type: 'aaqu-modbus-diagnostic', server: 'c1',
+                    operation: 'readDeviceIdentification', readDeviceIdCode: '2', objectId: '1' }
+            ];
+            helper.load([modbusClientNode, modbusDiagnosticNode], flow, function() {
+                const n1 = helper.getNode('n1');
+                n1.should.have.property('operation', 'readDeviceIdentification');
+                n1.should.have.property('readDeviceIdCode', 2);
+                n1.should.have.property('objectId', 1);
+                done();
+            });
+        });
+    });
+
+    describe('modbus-file node', function() {
+        it('should default to read operation', function(done) {
+            const flow = [
+                { id: 'c1', type: 'aaqu-modbus-client', host: 'localhost', port: '502' },
+                { id: 'n1', type: 'aaqu-modbus-file', server: 'c1' }
+            ];
+            helper.load([modbusClientNode, modbusFileNode], flow, function() {
+                const n1 = helper.getNode('n1');
+                n1.should.have.property('operation', 'read');
+                done();
+            });
+        });
+
+        it('should accept write operation', function(done) {
+            const flow = [
+                { id: 'c1', type: 'aaqu-modbus-client', host: 'localhost', port: '502' },
+                { id: 'n1', type: 'aaqu-modbus-file', server: 'c1', operation: 'write', unitId: '7' }
+            ];
+            helper.load([modbusClientNode, modbusFileNode], flow, function() {
+                const n1 = helper.getNode('n1');
+                n1.should.have.property('operation', 'write');
+                n1.should.have.property('unitId', 7);
                 done();
             });
         });

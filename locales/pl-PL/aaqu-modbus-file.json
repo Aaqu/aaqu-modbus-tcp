@@ -1,0 +1,18 @@
+{
+    "aaqu-modbus-file": {
+        "label": {
+            "name": "Nazwa",
+            "server": "Serwer",
+            "unitId": "ID urządzenia",
+            "operation": "Operacja"
+        },
+        "status": {
+            "connected": "połączony",
+            "disconnected": "rozłączony",
+            "reading": "odczyt pliku...",
+            "writing": "zapis pliku...",
+            "success": "sukces",
+            "noServer": "brak serwera"
+        }
+    }
+}

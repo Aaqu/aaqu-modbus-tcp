@@ -1,0 +1,18 @@
+{
+    "aaqu-modbus-diagnostic": {
+        "label": {
+            "name": "Name",
+            "server": "Server",
+            "unitId": "Unit ID",
+            "operation": "Operation",
+            "readDeviceIdCode": "ID Code",
+            "objectId": "Object ID"
+        },
+        "status": {
+            "connected": "connected",
+            "disconnected": "disconnected",
+            "success": "success",
+            "noServer": "no server"
+        }
+    }
+}

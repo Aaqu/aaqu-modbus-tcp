@@ -1,0 +1,18 @@
+{
+    "aaqu-modbus-file": {
+        "label": {
+            "name": "名前",
+            "server": "サーバー",
+            "unitId": "ユニットID",
+            "operation": "操作"
+        },
+        "status": {
+            "connected": "接続済み",
+            "disconnected": "切断",
+            "reading": "ファイル読取...",
+            "writing": "ファイル書込...",
+            "success": "成功",
+            "noServer": "サーバーなし"
+        }
+    }
+}

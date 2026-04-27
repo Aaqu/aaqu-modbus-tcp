@@ -1,0 +1,69 @@
+<script type="text/javascript">
+    RED.nodes.registerType('aaqu-modbus-file', {
+        category: 'Aaqu Portal',
+        color: '#C0C0C0',
+        defaults: {
+            name: { value: '' },
+            server: { value: '', type: 'aaqu-modbus-client', required: true },
+            operation: { value: 'read', required: true },
+            unitId: { value: 1, validate: RED.validators.number() }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'db.svg',
+        paletteLabel: 'modbus file',
+        label: function() {
+            return this.name || (this.operation === 'write' ? 'Write File Record' : 'Read File Record');
+        },
+        labelStyle: function() {
+            return this.name ? 'node_label_italic' : '';
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="aaqu-modbus-file">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-server"><i class="fa fa-server"></i> Server</label>
+        <input type="text" id="node-input-server">
+    </div>
+    <div class="form-row">
+        <label for="node-input-unitId"><i class="fa fa-hashtag"></i> Unit ID</label>
+        <input type="number" id="node-input-unitId" min="1" max="255">
+    </div>
+    <div class="form-row">
+        <label for="node-input-operation"><i class="fa fa-code"></i> Operation</label>
+        <select id="node-input-operation">
+            <option value="read">FC20 - Read File Record</option>
+            <option value="write">FC21 - Write File Record</option>
+        </select>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="aaqu-modbus-file">
+    <p>Read (FC20 / 0x14) or Write (FC21 / 0x15) extended file records.</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">array</span></dt>
+        <dd>Array of record descriptors.<br>
+        For read: <code>{fileNumber, recordNumber, recordLength}</code>.<br>
+        For write: <code>{fileNumber, recordNumber, recordData: [uint16,...]}</code>.</dd>
+        <dt class="optional">operation <span class="property-type">string</span></dt>
+        <dd><code>read</code> or <code>write</code>.</dd>
+        <dt class="optional">unitId <span class="property-type">number</span></dt>
+        <dd>Override Unit ID.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">array</span></dt>
+        <dd>For read: array of <code>{recordData: [uint16,...]}</code>. For write: echo of request descriptors.</dd>
+    </dl>
+
+    <h3>Limits</h3>
+    <p>File number 1-65535. Record number 0-9999. Each record up to 122 16-bit words. Whole PDU ≤ 253 bytes.</p>
+</script>

@@ -1,0 +1,18 @@
+{
+    "aaqu-modbus-diagnostic": {
+        "label": {
+            "name": "Nazwa",
+            "server": "Serwer",
+            "unitId": "ID urządzenia",
+            "operation": "Operacja",
+            "readDeviceIdCode": "Kod ID",
+            "objectId": "ID obiektu"
+        },
+        "status": {
+            "connected": "połączony",
+            "disconnected": "rozłączony",
+            "success": "sukces",
+            "noServer": "brak serwera"
+        }
+    }
+}

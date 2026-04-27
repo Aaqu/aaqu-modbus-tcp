@@ -6,7 +6,8 @@ const READ_METHODS = {
     [FUNCTION_CODES.READ_COILS]: 'readCoils',
     [FUNCTION_CODES.READ_DISCRETE_INPUTS]: 'readDiscreteInputs',
     [FUNCTION_CODES.READ_HOLDING_REGISTERS]: 'readHoldingRegisters',
-    [FUNCTION_CODES.READ_INPUT_REGISTERS]: 'readInputRegisters'
+    [FUNCTION_CODES.READ_INPUT_REGISTERS]: 'readInputRegisters',
+    [FUNCTION_CODES.READ_FIFO_QUEUE]: 'readFifoQueue'
 };
 
 module.exports = function(RED) {
@@ -44,23 +45,30 @@ module.exports = function(RED) {
             send = send || function() { node.send.apply(node, arguments); };
 
             let fc, address, quantity, unitId;
+            const fcOverride = msg.functionCode !== undefined ? parseInt(msg.functionCode) : node.functionCode;
+            const isFifo = fcOverride === FUNCTION_CODES.READ_FIFO_QUEUE;
 
             if (node.externalData) {
-                if (msg.unitId === undefined || msg.address === undefined || msg.quantity === undefined) {
-                    const err = new Error('External data mode: msg.unitId, msg.address, and msg.quantity are required');
+                if (msg.unitId === undefined || msg.address === undefined) {
+                    const err = new Error('External data mode: msg.unitId and msg.address are required');
+                    if (done) done(err);
+                    else node.error(err, msg);
+                    return;
+                }
+                if (!isFifo && msg.quantity === undefined) {
+                    const err = new Error('External data mode: msg.quantity is required (not for FIFO)');
                     if (done) done(err);
                     else node.error(err, msg);
                     return;
                 }
                 unitId = parseInt(msg.unitId);
                 address = parseInt(msg.address);
-                quantity = parseInt(msg.quantity);
-                fc = msg.functionCode !== undefined ? parseInt(msg.functionCode) : node.functionCode;
+                quantity = isFifo ? undefined : parseInt(msg.quantity);
+                fc = fcOverride;
             } else {
-                // External Data OFF - use ONLY node configuration
-                fc = msg.functionCode !== undefined ? parseInt(msg.functionCode) : node.functionCode;
+                fc = fcOverride;
                 address = node.address;
-                quantity = node.quantity;
+                quantity = isFifo ? undefined : node.quantity;
                 unitId = node.unitId;
             }
 
@@ -74,7 +82,9 @@ module.exports = function(RED) {
 
             node.status({ fill: 'blue', shape: 'dot', text: 'reading...' });
 
-            node.server.request(method, address, quantity, unitId)
+            const args = isFifo ? [address, unitId] : [address, quantity, unitId];
+
+            node.server.request(method, ...args)
                 .then(result => {
                     if (result.error) {
                         msg.payload = null;
@@ -86,6 +96,19 @@ module.exports = function(RED) {
                             msg.raw = result.raw;
                         }
                         node.status({ fill: 'yellow', shape: 'ring', text: result.message });
+                    } else if (isFifo) {
+                        msg.payload = result.values;
+                        msg.fifoCount = result.fifoCount;
+                        msg.requestModbus = {
+                            functionCode: fc,
+                            address: address,
+                            unitId: unitId,
+                            fifoCount: result.fifoCount
+                        };
+                        if (node.server.includeRaw) {
+                            msg.raw = result.raw;
+                        }
+                        node.status({ fill: 'green', shape: 'dot', text: 'success' });
                     } else {
                         msg.payload = result.responseBuffer;
                         msg.responseBuffer = {

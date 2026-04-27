@@ -4,7 +4,8 @@ const { FUNCTION_CODES } = require('../lib/modbus-tcp');
 
 const WRITE_METHODS = {
     [FUNCTION_CODES.WRITE_SINGLE_COIL]: 'writeSingleCoil',
-    [FUNCTION_CODES.WRITE_SINGLE_REGISTER]: 'writeSingleRegister'
+    [FUNCTION_CODES.WRITE_SINGLE_REGISTER]: 'writeSingleRegister',
+    [FUNCTION_CODES.MASK_WRITE_REGISTER]: 'maskWriteRegister'
 };
 
 module.exports = function(RED) {
@@ -53,13 +54,10 @@ module.exports = function(RED) {
                 address = parseInt(msg.address);
                 fc = msg.functionCode !== undefined ? parseInt(msg.functionCode) : node.functionCode;
             } else {
-                // External Data OFF - use ONLY node configuration
                 fc = msg.functionCode !== undefined ? parseInt(msg.functionCode) : node.functionCode;
                 address = node.address;
                 unitId = node.unitId;
             }
-
-            let value = msg.payload;
 
             const method = WRITE_METHODS[fc];
             if (!method) {
@@ -69,21 +67,48 @@ module.exports = function(RED) {
                 return;
             }
 
-            if (fc === FUNCTION_CODES.WRITE_SINGLE_COIL) {
-                value = !!value;
-            } else {
-                value = parseInt(value) || 0;
-                if (value < 0 || value > 65535) {
-                    const err = new Error(`Register value out of range: ${value}`);
+            let args;
+            if (fc === FUNCTION_CODES.MASK_WRITE_REGISTER) {
+                if (msg.andMask === undefined || msg.orMask === undefined) {
+                    const err = new Error('FC22 mask write requires msg.andMask and msg.orMask');
                     if (done) done(err);
                     else node.error(err, msg);
                     return;
                 }
+                const andMask = parseInt(msg.andMask);
+                const orMask = parseInt(msg.orMask);
+                if (Number.isNaN(andMask) || andMask < 0 || andMask > 0xFFFF) {
+                    const err = new Error(`andMask out of range: ${msg.andMask}`);
+                    if (done) done(err);
+                    else node.error(err, msg);
+                    return;
+                }
+                if (Number.isNaN(orMask) || orMask < 0 || orMask > 0xFFFF) {
+                    const err = new Error(`orMask out of range: ${msg.orMask}`);
+                    if (done) done(err);
+                    else node.error(err, msg);
+                    return;
+                }
+                args = [address, andMask, orMask, unitId];
+            } else {
+                let value = msg.payload;
+                if (fc === FUNCTION_CODES.WRITE_SINGLE_COIL) {
+                    value = !!value;
+                } else {
+                    value = parseInt(value) || 0;
+                    if (value < 0 || value > 65535) {
+                        const err = new Error(`Register value out of range: ${value}`);
+                        if (done) done(err);
+                        else node.error(err, msg);
+                        return;
+                    }
+                }
+                args = [address, value, unitId];
             }
 
             node.status({ fill: 'blue', shape: 'dot', text: 'writing...' });
 
-            node.server.request(method, address, value, unitId)
+            node.server.request(method, ...args)
                 .then(result => {
                     if (result.error) {
                         msg.payload = null;
@@ -95,6 +120,18 @@ module.exports = function(RED) {
                             msg.raw = result.raw;
                         }
                         node.status({ fill: 'yellow', shape: 'ring', text: result.message });
+                    } else if (fc === FUNCTION_CODES.MASK_WRITE_REGISTER) {
+                        msg.requestModbus = {
+                            functionCode: fc,
+                            address: result.address,
+                            andMask: result.andMask,
+                            orMask: result.orMask,
+                            unitId: unitId
+                        };
+                        if (node.server.includeRaw) {
+                            msg.raw = result.raw;
+                        }
+                        node.status({ fill: 'green', shape: 'dot', text: 'success' });
                     } else {
                         msg.requestModbus = {
                             functionCode: fc,

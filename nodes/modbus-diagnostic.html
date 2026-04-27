@@ -1,0 +1,91 @@
+<script type="text/javascript">
+    RED.nodes.registerType('aaqu-modbus-diagnostic', {
+        category: 'Aaqu Portal',
+        color: '#A6BBCF',
+        defaults: {
+            name: { value: '' },
+            server: { value: '', type: 'aaqu-modbus-client', required: true },
+            operation: { value: 'reportServerId', required: true },
+            readDeviceIdCode: { value: 1 },
+            objectId: { value: 0 },
+            unitId: { value: 1, validate: RED.validators.number() }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'db.svg',
+        paletteLabel: 'modbus diagnostic',
+        label: function() {
+            if (this.name) return this.name;
+            var op = { 'reportServerId': 'Server ID', 'readDeviceIdentification': 'Device ID' };
+            return op[this.operation] || 'Diagnostic';
+        },
+        labelStyle: function() {
+            return this.name ? 'node_label_italic' : '';
+        },
+        oneditprepare: function() {
+            var opSelect = $('#node-input-operation');
+            function toggle() {
+                $('#row-readDeviceIdCode, #row-objectId').toggle(opSelect.val() === 'readDeviceIdentification');
+            }
+            opSelect.on('change', toggle);
+            toggle();
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="aaqu-modbus-diagnostic">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-server"><i class="fa fa-server"></i> Server</label>
+        <input type="text" id="node-input-server">
+    </div>
+    <div class="form-row">
+        <label for="node-input-unitId"><i class="fa fa-hashtag"></i> Unit ID</label>
+        <input type="number" id="node-input-unitId" min="1" max="255">
+    </div>
+    <div class="form-row">
+        <label for="node-input-operation"><i class="fa fa-code"></i> Operation</label>
+        <select id="node-input-operation">
+            <option value="reportServerId">FC17 - Report Server ID</option>
+            <option value="readDeviceIdentification">FC43/14 - Read Device Identification</option>
+        </select>
+    </div>
+    <div class="form-row" id="row-readDeviceIdCode">
+        <label for="node-input-readDeviceIdCode"><i class="fa fa-info"></i> ID Code</label>
+        <select id="node-input-readDeviceIdCode">
+            <option value="1">1 - Basic</option>
+            <option value="2">2 - Regular</option>
+            <option value="3">3 - Extended</option>
+            <option value="4">4 - Specific</option>
+        </select>
+    </div>
+    <div class="form-row" id="row-objectId">
+        <label for="node-input-objectId"><i class="fa fa-cube"></i> Object ID</label>
+        <input type="number" id="node-input-objectId" min="0" max="255">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="aaqu-modbus-diagnostic">
+    <p>Diagnostic operations: Report Server ID (FC17) and Read Device Identification (FC43 / MEI 0x0E).</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt class="optional">operation <span class="property-type">string</span></dt>
+        <dd><code>reportServerId</code> or <code>readDeviceIdentification</code>.</dd>
+        <dt class="optional">readDeviceIdCode <span class="property-type">number</span></dt>
+        <dd>1-Basic, 2-Regular, 3-Extended, 4-Specific. Only for <code>readDeviceIdentification</code>.</dd>
+        <dt class="optional">objectId <span class="property-type">number</span></dt>
+        <dd>First object ID to fetch (0=VendorName, 1=ProductCode, 2=Revision, ...).</dd>
+        <dt class="optional">unitId <span class="property-type">number</span></dt>
+        <dd>Override Unit ID.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>For <code>reportServerId</code>: <code>{serverId, runIndicator, additionalData}</code>. For <code>readDeviceIdentification</code>: <code>{conformityLevel, moreFollows, nextObjectId, objects}</code>.</dd>
+    </dl>
+</script>
