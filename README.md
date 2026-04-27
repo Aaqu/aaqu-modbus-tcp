@@ -2,6 +2,11 @@
 
 Node-RED nodes for Modbus TCP client communication.
 
+## Support
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/L4L01UOFRG)
+
+
 ## Disclaimer
 
 **THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.** The author makes no guarantees regarding the reliability, accuracy, or suitability of this software for any particular purpose. Use at your own risk. The author shall not be liable for any damages arising from the use of this software in production environments, industrial automation, or any other application.
