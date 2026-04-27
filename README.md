@@ -14,9 +14,14 @@ Node-RED nodes for Modbus TCP client communication.
 ## Features
 
 - **Modbus TCP Client** - Connect to Modbus TCP servers (PLCs, RTUs, simulators)
-- **Read Operations** - FC01, FC02, FC03, FC04
-- **Write Operations** - FC05, FC06, FC15, FC16
+- **Read Operations** - FC01-FC04, FC24 (FIFO Queue)
+- **Write Operations** - FC05, FC06, FC15, FC16, FC22 (Mask Write)
+- **Read/Write Combined** - FC23 (atomic Read/Write Multiple Registers)
+- **Diagnostics** - FC17 (Report Server ID), FC43/14 (Read Device Identification)
+- **File Records** - FC20 (Read), FC21 (Write)
+- **Response validation** - byte-count check on read responses (rejects malformed frames)
 - **Auto-reconnect** - Automatic reconnection on connection loss
+- **Heartbeat** - Application-layer keep-alive for unstable links
 - **Dynamic configuration** - Override parameters via `msg` properties
 - **External Data mode** - Hide GUI fields and require parameters from `msg` only
 - **Unit ID per node** - Different Unit IDs for each operation
@@ -92,6 +97,13 @@ Reads data from a Modbus server.
 | Read Discrete Inputs | FC02 | Read discrete input status (bits) | 2000 |
 | Read Holding Registers | FC03 | Read holding registers (16-bit) | 125 |
 | Read Input Registers | FC04 | Read input registers (16-bit) | 125 |
+| Read FIFO Queue | FC24 | Read FIFO queue at a single address | 31 (server-defined) |
+
+For **FC24 (FIFO)**, the `quantity` field is ignored — the server returns whatever the queue depth is at that address. Output:
+```javascript
+msg.payload = [val1, val2, ...];   // Array of 16-bit values from the FIFO
+msg.fifoCount = 3;                 // Number of values returned
+```
 
 #### Input Message (optional overrides)
 
@@ -148,6 +160,15 @@ Writes a single value to a Modbus server.
 |----------|------|-------------|-------------|
 | Write Single Coil | FC05 | Write single coil | true/false |
 | Write Single Register | FC06 | Write single register | 0-65535 |
+| Mask Write Register | FC22 | Apply `(current AND andMask) OR (orMask AND NOT andMask)` to a register | masks 0-65535 |
+
+For **FC22 (Mask Write)**, `msg.payload` is ignored. Required:
+```javascript
+msg.andMask = 0xF2;
+msg.orMask  = 0x25;
+msg.address = 0x0010;     // (or from node config)
+msg.unitId  = 1;
+```
 
 #### Input Message
 
@@ -228,6 +249,114 @@ This node is designed for dynamic, data-driven scenarios where parameters come f
 - Multi-device communication with varying addresses
 - Dynamic write operations based on external configuration
 - Integration with SCADA systems and databases
+
+### aaqu-modbus-read-write
+
+Atomic Read/Write Multiple Registers (FC23 / 0x17). The write is performed first, then the read — both in a single transaction.
+
+#### Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| Server | config | - | Reference to aaqu-modbus-client node |
+| External Data | checkbox | false | When enabled, read/write addresses come from msg |
+| Unit ID | number | 1 | Modbus unit identifier (1-255) |
+| Read Address | number | 0 | Starting read address (0-65535) |
+| Read Quantity | number | 1 | Number of registers to read (1-125) |
+| Write Address | number | 0 | Starting write address (0-65535) |
+
+#### Input Message
+
+```javascript
+msg.payload = [100, 200, 300];  // Values to write (1-121 registers)
+// External Data ON additionally requires:
+msg.unitId = 1;
+msg.readAddress = 0;
+msg.readQuantity = 5;
+msg.writeAddress = 100;
+```
+
+#### Output Message
+
+```javascript
+msg.payload = [/* read register bytes */];
+msg.requestModbus = {
+    functionCode: 23,
+    readAddress: 0, readQuantity: 5,
+    writeAddress: 100, writeQuantity: 3,
+    unitId: 1, byteCount: 10
+};
+```
+
+### aaqu-modbus-diagnostic
+
+Diagnostic operations: **Report Server ID** (FC17) and **Read Device Identification** (FC43 / MEI 0x0E).
+
+#### Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| Server | config | - | Reference to aaqu-modbus-client node |
+| Unit ID | number | 1 | Modbus unit identifier (1-255) |
+| Operation | select | reportServerId | `reportServerId` or `readDeviceIdentification` |
+| ID Code | select | 1 - Basic | Only for Read Device ID: 1=Basic, 2=Regular, 3=Extended, 4=Specific |
+| Object ID | number | 0 | Only for Read Device ID. 0=VendorName, 1=ProductCode, 2=Revision, 3=VendorUrl, 4=ProductName, 5=ModelName, 6=UserApplicationName |
+
+#### Output Message
+
+For `reportServerId`:
+```javascript
+msg.payload = {
+    serverId: 0x42,
+    runIndicator: true,
+    additionalData: <Buffer ...>
+};
+```
+
+For `readDeviceIdentification`:
+```javascript
+msg.payload = {
+    conformityLevel: 0x01,
+    moreFollows: false,
+    nextObjectId: 0,
+    objects: { 0: 'VendorName', 1: 'ProductCode', 2: 'v1.0' }
+};
+```
+
+### aaqu-modbus-file
+
+Extended file record access: **Read File Record** (FC20) and **Write File Record** (FC21).
+
+#### Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| Server | config | - | Reference to aaqu-modbus-client node |
+| Unit ID | number | 1 | Modbus unit identifier (1-255) |
+| Operation | select | read | `read` or `write` |
+
+#### Input Message
+
+For **read**:
+```javascript
+msg.payload = [
+    { fileNumber: 4, recordNumber: 1, recordLength: 2 },
+    { fileNumber: 4, recordNumber: 5, recordLength: 1 }
+];
+```
+
+For **write**:
+```javascript
+msg.payload = [
+    { fileNumber: 4, recordNumber: 7, recordData: [0x06AF, 0x04BE] }
+];
+```
+
+Limits: file number 1-65535, record number 0-9999, up to 122 16-bit words per record. Whole PDU must fit in 253 bytes.
+
+#### Output Message
+
+For **read**, `msg.payload` is an array of `{ recordData: [uint16, ...] }`. For **write**, `msg.payload` is an echo of the request descriptors.
 
 ## Examples
 
@@ -383,6 +512,25 @@ Aaqu
 5. Submit a pull request
 
 ## Changelog
+
+### 0.4.0 (2026-04-28)
+
+- **Extended function codes:**
+  - FC17 - Report Server ID
+  - FC20, FC21 - Read/Write File Record
+  - FC22 - Mask Write Register
+  - FC23 - Read/Write Multiple Registers (atomic)
+  - FC24 - Read FIFO Queue
+  - FC43/14 - Read Device Identification (MEI 0x0E)
+- **New nodes:**
+  - `aaqu-modbus-read-write` (FC23)
+  - `aaqu-modbus-diagnostic` (FC17, FC43/14)
+  - `aaqu-modbus-file` (FC20, FC21)
+- FC22 (mask write) added to existing `aaqu-modbus-write` node
+- FC24 (FIFO) added to existing `aaqu-modbus-read` node
+- **Response byte-count validation** - read responses are now verified against expected length, malformed frames are rejected
+- Locales (en-US, pl-PL, ja-JP, zh-CN) for all new nodes
+- Note: FC07, FC08, FC11, FC12 (Serial Line only per spec V1.1b3) remain out of scope for this TCP-only package
 
 ### 0.3.2 (2026-02-05)
 
