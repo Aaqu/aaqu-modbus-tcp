@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1] - 2026-04-28
+
+### Documentation
+- README updated with new nodes (`aaqu-modbus-read-write`, `aaqu-modbus-diagnostic`, `aaqu-modbus-file`), new function codes (FC22 mask write, FC24 FIFO), and feature list.
+- Inline `Changelog` section moved out of README; full version history now lives in `CHANGELOG.md`.
+- Backfilled missing 0.1.x and 0.3.x entries in `CHANGELOG.md`.
+
 ## [0.4.0] - 2026-04-28
 
 ### Added
