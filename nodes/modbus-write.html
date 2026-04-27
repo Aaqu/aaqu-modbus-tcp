@@ -22,7 +22,8 @@
             if (this.name) return this.name;
             var fc = {
                 '5': 'Coil',
-                '6': 'Register'
+                '6': 'Register',
+                '22': 'Register (Mask)'
             };
             return 'Write ' + (fc[this.functionCode] || '');
         },
@@ -66,6 +67,7 @@
         <select id="node-input-functionCode">
             <option value="5">FC05 - Write Single Coil</option>
             <option value="6">FC06 - Write Single Register</option>
+            <option value="22">FC22 - Mask Write Register</option>
         </select>
     </div>
     <div class="form-row" id="row-address">
@@ -102,6 +104,7 @@
     <ul>
         <li><b>FC05 - Write Single Coil:</b> Write a boolean value (true/false or 1/0)</li>
         <li><b>FC06 - Write Single Register:</b> Write a 16-bit value (0-65535)</li>
+        <li><b>FC22 - Mask Write Register:</b> Apply <code>(current AND msg.andMask) OR (msg.orMask AND NOT msg.andMask)</code> to a register. Requires <code>msg.andMask</code> and <code>msg.orMask</code> (both 0-65535). <code>msg.payload</code> is ignored.</li>
     </ul>
     <p>Configuration can be overridden by setting properties on the incoming message.</p>
 </script>

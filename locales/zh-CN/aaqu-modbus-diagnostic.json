@@ -1,0 +1,18 @@
+{
+    "aaqu-modbus-diagnostic": {
+        "label": {
+            "name": "名称",
+            "server": "服务器",
+            "unitId": "设备ID",
+            "operation": "操作",
+            "readDeviceIdCode": "ID代码",
+            "objectId": "对象ID"
+        },
+        "status": {
+            "connected": "已连接",
+            "disconnected": "已断开",
+            "success": "成功",
+            "noServer": "无服务器"
+        }
+    }
+}

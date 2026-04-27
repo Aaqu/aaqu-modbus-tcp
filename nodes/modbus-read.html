@@ -27,7 +27,8 @@
                 '1': 'Coils',
                 '2': 'Discrete Inputs',
                 '3': 'Holding Registers',
-                '4': 'Input Registers'
+                '4': 'Input Registers',
+                '24': 'FIFO Queue'
             };
             return 'Read ' + (fc[this.functionCode] || '');
         },
@@ -39,21 +40,23 @@
             var quantityInput = $('#node-input-quantity');
             var externalDataCheckbox = $('#node-input-externalData');
 
-            function toggleExternalFields() {
+            function toggleFields() {
                 var isExternal = externalDataCheckbox.prop('checked');
-                $('#row-unitId, #row-address, #row-quantity').toggle(!isExternal);
+                var isFifo = fcSelect.val() === '24';
+                $('#row-unitId, #row-address').toggle(!isExternal);
+                $('#row-quantity').toggle(!isExternal && !isFifo);
             }
 
-            externalDataCheckbox.on('change', toggleExternalFields);
-            toggleExternalFields();
-
+            externalDataCheckbox.on('change', toggleFields);
             fcSelect.on('change', function() {
                 var fc = fcSelect.val();
                 var max = (fc === '1' || fc === '2') ? 2000 : 125;
                 quantityInput.attr('max', max);
                 $('#quantity-max').text(max);
+                toggleFields();
             });
 
+            toggleFields();
             fcSelect.trigger('change');
         }
     });
@@ -84,6 +87,7 @@
             <option value="2">FC02 - Read Discrete Inputs</option>
             <option value="3">FC03 - Read Holding Registers</option>
             <option value="4">FC04 - Read Input Registers</option>
+            <option value="24">FC24 - Read FIFO Queue</option>
         </select>
     </div>
     <div class="form-row" id="row-address">
@@ -127,6 +131,7 @@
         <li><b>FC02 - Read Discrete Inputs:</b> Read 1-2000 discrete input values (boolean)</li>
         <li><b>FC03 - Read Holding Registers:</b> Read 1-125 holding register values (16-bit)</li>
         <li><b>FC04 - Read Input Registers:</b> Read 1-125 input register values (16-bit)</li>
+        <li><b>FC24 - Read FIFO Queue:</b> Read up to 31 16-bit values from a FIFO queue at a single pointer address. <code>quantity</code> is ignored; <code>msg.fifoCount</code> is set in output.</li>
     </ul>
     <p>Configuration can be overridden by setting properties on the incoming message.</p>
 </script>

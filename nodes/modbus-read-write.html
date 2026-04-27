@@ -1,0 +1,98 @@
+<script type="text/javascript">
+    RED.nodes.registerType('aaqu-modbus-read-write', {
+        category: 'Aaqu Portal',
+        color: '#B5A8D6',
+        defaults: {
+            name: { value: '' },
+            server: { value: '', type: 'aaqu-modbus-client', required: true },
+            externalData: { value: false },
+            unitId: { value: 1, validate: function(v) {
+                return $('#node-input-externalData').prop('checked') || RED.validators.number()(v);
+            }},
+            readAddress: { value: 0, validate: function(v) {
+                return $('#node-input-externalData').prop('checked') || RED.validators.number()(v);
+            }},
+            readQuantity: { value: 1, validate: function(v) {
+                return $('#node-input-externalData').prop('checked') || RED.validators.number()(v);
+            }},
+            writeAddress: { value: 0, validate: function(v) {
+                return $('#node-input-externalData').prop('checked') || RED.validators.number()(v);
+            }}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'db.svg',
+        paletteLabel: 'modbus read+write',
+        label: function() {
+            return this.name || 'Read/Write Multiple Registers';
+        },
+        labelStyle: function() {
+            return this.name ? 'node_label_italic' : '';
+        },
+        oneditprepare: function() {
+            var externalDataCheckbox = $('#node-input-externalData');
+            function toggle() {
+                var ext = externalDataCheckbox.prop('checked');
+                $('#row-unitId, #row-readAddress, #row-readQuantity, #row-writeAddress').toggle(!ext);
+            }
+            externalDataCheckbox.on('change', toggle);
+            toggle();
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="aaqu-modbus-read-write">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-server"><i class="fa fa-server"></i> Server</label>
+        <input type="text" id="node-input-server">
+    </div>
+    <div class="form-row">
+        <label for="node-input-externalData"><i class="fa fa-external-link"></i> External Data</label>
+        <input type="checkbox" id="node-input-externalData" style="width:auto; margin-left:0;">
+        <span class="form-tips" style="margin-left:10px;">msg.unitId, msg.readAddress, msg.readQuantity, msg.writeAddress</span>
+    </div>
+    <div class="form-row" id="row-unitId">
+        <label for="node-input-unitId"><i class="fa fa-hashtag"></i> Unit ID</label>
+        <input type="number" id="node-input-unitId" min="1" max="255">
+    </div>
+    <div class="form-row" id="row-readAddress">
+        <label for="node-input-readAddress"><i class="fa fa-map-marker"></i> Read Addr</label>
+        <input type="number" id="node-input-readAddress" min="0" max="65535">
+    </div>
+    <div class="form-row" id="row-readQuantity">
+        <label for="node-input-readQuantity"><i class="fa fa-list-ol"></i> Read Qty</label>
+        <input type="number" id="node-input-readQuantity" min="1" max="125">
+    </div>
+    <div class="form-row" id="row-writeAddress">
+        <label for="node-input-writeAddress"><i class="fa fa-map-marker"></i> Write Addr</label>
+        <input type="number" id="node-input-writeAddress" min="0" max="65535">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="aaqu-modbus-read-write">
+    <p>Atomic read/write of multiple holding registers (FC23 / 0x17).</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">array | number</span></dt>
+        <dd>Array of register values (0-65535) to write. Up to 121 registers. Single value is wrapped in an array.</dd>
+        <dt class="optional">unitId, readAddress, readQuantity, writeAddress</dt>
+        <dd>External data mode overrides.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">array</span></dt>
+        <dd>Read register bytes (raw byte array; pair into 16-bit values as needed).</dd>
+        <dt>requestModbus <span class="property-type">object</span></dt>
+        <dd>Operation metadata: readAddress, readQuantity, writeAddress, writeQuantity, unitId, byteCount.</dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>The write is performed before the read in the same transaction. Read range may overlap with the write range.</p>
+    <p>Limits: read 1-125 registers, write 1-121 registers.</p>
+</script>

@@ -1,0 +1,19 @@
+{
+    "aaqu-modbus-read-write": {
+        "label": {
+            "name": "名前",
+            "server": "サーバー",
+            "unitId": "ユニットID",
+            "readAddress": "読取アドレス",
+            "readQuantity": "読取数量",
+            "writeAddress": "書込アドレス"
+        },
+        "status": {
+            "connected": "接続済み",
+            "disconnected": "切断",
+            "running": "読取+書込...",
+            "success": "成功",
+            "noServer": "サーバーなし"
+        }
+    }
+}

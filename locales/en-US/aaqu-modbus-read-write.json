@@ -1,0 +1,19 @@
+{
+    "aaqu-modbus-read-write": {
+        "label": {
+            "name": "Name",
+            "server": "Server",
+            "unitId": "Unit ID",
+            "readAddress": "Read Address",
+            "readQuantity": "Read Quantity",
+            "writeAddress": "Write Address"
+        },
+        "status": {
+            "connected": "connected",
+            "disconnected": "disconnected",
+            "running": "read+write...",
+            "success": "success",
+            "noServer": "no server"
+        }
+    }
+}

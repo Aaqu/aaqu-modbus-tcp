@@ -1,0 +1,19 @@
+{
+    "aaqu-modbus-read-write": {
+        "label": {
+            "name": "名称",
+            "server": "服务器",
+            "unitId": "设备ID",
+            "readAddress": "读地址",
+            "readQuantity": "读数量",
+            "writeAddress": "写地址"
+        },
+        "status": {
+            "connected": "已连接",
+            "disconnected": "已断开",
+            "running": "读+写...",
+            "success": "成功",
+            "noServer": "无服务器"
+        }
+    }
+}

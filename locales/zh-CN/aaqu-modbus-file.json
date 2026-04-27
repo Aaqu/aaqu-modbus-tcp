@@ -1,0 +1,18 @@
+{
+    "aaqu-modbus-file": {
+        "label": {
+            "name": "名称",
+            "server": "服务器",
+            "unitId": "设备ID",
+            "operation": "操作"
+        },
+        "status": {
+            "connected": "已连接",
+            "disconnected": "已断开",
+            "reading": "读文件...",
+            "writing": "写文件...",
+            "success": "成功",
+            "noServer": "无服务器"
+        }
+    }
+}
