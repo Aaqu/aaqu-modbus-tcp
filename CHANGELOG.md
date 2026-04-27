@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1] - 2026-04-28
+
+### Documentation
+- README updated with new nodes (`aaqu-modbus-read-write`, `aaqu-modbus-diagnostic`, `aaqu-modbus-file`), new function codes (FC22 mask write, FC24 FIFO), and feature list.
+- Inline `Changelog` section moved out of README; full version history now lives in `CHANGELOG.md`.
+- Backfilled missing 0.1.x and 0.3.x entries in `CHANGELOG.md`.
+
 ## [0.4.0] - 2026-04-28
 
 ### Added
@@ -30,6 +37,37 @@
 ### Out of scope
 - FC07, FC08, FC11, FC12 — Serial Line only per spec V1.1b3 §6, not applicable to TCP.
 
+## [0.3.2] - 2026-02-05
+
+### Fixed
+- `MaxListenersExceededWarning` — event listeners on `ModbusClient` (`connect`/`disconnect`/`error`) are now removed when the config node is closed.
+- Config node allows unlimited listeners, preventing warnings when 10+ operational nodes share a connection.
+
+## [0.3.1] - 2026-02-05
+
+### Fixed
+- Memory leak: `connected`/`disconnected` listeners on the config node are now properly removed when operation nodes are closed/redeployed.
+
+## [0.3.0] - 2026-02-05
+
+### Added
+- **Heartbeat** — periodic Modbus requests to keep connections alive.
+  - Configurable interval (default: 5000 ms).
+  - Automatically skipped when there are pending requests.
+- **External Data mode** for `modbus-read` and `modbus-write` nodes.
+  - When enabled, Unit ID/Address/Quantity fields are hidden and must come from `msg`.
+  - When disabled, `msg.*` overrides are ignored (uses only node config).
+- `modbus-write-multiple` now operates in forced external data mode (Unit ID and Address must come from `msg`).
+- **Include Raw Response** option in client config (includes raw Modbus frame buffer in `msg.raw`).
+- Disclaimer in README.
+
+### Changed
+- Improved disconnect logging with reason (`error` or `server closed`).
+- Updated External Data hints to show parameter names (`msg.unitId`, `msg.address`, `msg.quantity`).
+
+### Fixed
+- Checkbox state persistence in configuration dialog.
+
 ## [0.2.3] - 2026-01-28
 
 ### Added
@@ -48,12 +86,36 @@
 ## [0.2.1]
 
 ### Fixed
-- Client fixes
+- Uncaught exception when Modbus server is unavailable (ECONNREFUSED).
+- Improved error handling to prevent Node-RED crash on connection errors.
+- Timeout when closing Node-RED with an unavailable Modbus server.
+
+### Added
+- `host:port` info in connection error messages.
+- Option to disable connection error logging in console.
 
 ## [0.2.0]
 
 ### Changed
-- Updated to unique names for Node-RED nodes
+- Node names made unique (added `aaqu-` prefix).
+- Palette category changed to "Aaqu Portal".
+- Locale files renamed to match new node names.
+
+## [0.1.3]
+
+### Changed
+- README updates.
+
+## [0.1.2]
+
+### Changed
+- Test GitHub Actions.
+
+## [0.1.1]
+
+### Added
+- Published to npm registry.
+- README updates.
 
 ## [0.1.0]
 
